@@ -9,6 +9,7 @@ import Skills from './pages/Skills'
 import Projects from './pages/Projects'
 import Services from './pages/Services'
 import Contact from './pages/Contact'
+import NotFound from './pages/NotFound'
 
 function App() {
   return (
