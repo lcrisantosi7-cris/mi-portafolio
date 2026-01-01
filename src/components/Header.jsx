@@ -47,11 +47,32 @@ export const Header = () => {
 
         <button 
           onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-          className="md:hidden text-white"
+          className="md:hidden text-white p-2 rounded-md focus:outline-none focus:ring-2 focus:ring-emerald-400"
         >
           {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
         </button>
       </div>
+
+      {isMobileMenuOpen && (
+        <div className="md:hidden bg-zinc-900 border-t border-zinc-800 absolute w-full left-0 shadow-xl animate-in fade-in slide-in-from-top-4">
+          <nav className="flex flex-col p-4">
+            {navLinks.map(link => (
+              <Link
+                key={link.path}
+                to={link.path}
+                onClick={() => setIsMobileMenuOpen(false)} // Cierra el menú al hacer click
+                className={`px-4 py-3 rounded-lg transition-all ${
+                  location.pathname === link.path 
+                    ? 'bg-emerald-400 text-zinc-900 font-bold' 
+                    : 'text-gray-300 hover:bg-zinc-800'
+                }`}
+              >
+                {link.name}
+              </Link>
+            ))}
+          </nav>
+        </div>
+      )}
     </header>
   )
 }
