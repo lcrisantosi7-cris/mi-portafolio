@@ -9,7 +9,7 @@ export const Footer = () => {
           <a href="https://github.com/lcrisantosi7-cris/" target="_blank" className="text-gray-400 hover:text-emerald-400">
             <Github size={24} />
           </a>
-          <a href="https://www.linkedin.com/in/luis-crisanto-silupú" target="_blank" className="text-gray-400 hover:text-emerald-400">
+          <a href="https://www.linkedin.com/in/luis-crisanto-silupú" target="_blank" className="text-gray-400 hover:text-sky-700">
             <Linkedin size={24} />
           </a>
         </div>
