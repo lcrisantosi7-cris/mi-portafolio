@@ -4,7 +4,7 @@ import { Home, ArrowLeft, Search, Code, Zap } from 'lucide-react'
 
 const NotFound = () => {
   const navigate = useNavigate()
-  const [countdown, setCountdown] = useState(10)
+  const [countdown, setCountdown] = useState(20)
 
   useEffect(() => {
     // Contador regresivo para redirección automática

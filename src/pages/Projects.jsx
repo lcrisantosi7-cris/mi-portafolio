@@ -13,14 +13,13 @@ const Projects = () => {
 
   const projects = [
     {
-      title: 'Sistema de Gestión Universitaria',
+      title: 'Sistema de Gestión Escolar',
       description: 'Plataforma completa para la gestión de estudiantes, cursos y calificaciones con arquitectura MVC.',
       image: '🎓',
       tags: ['Spring Boot', 'MySQL', 'Thymeleaf', 'Bootstrap'],
       category: 'fullstack',
       type: 'academic',
-      github: '#',
-      demo: '#',
+      github: 'https://github.com/lcrisantosi7-cris/Sistema-Gestion-Escolar',
       status: 'Completado'
     },
     {
