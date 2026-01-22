@@ -36,8 +36,8 @@ export const Header = () => {
               to={link.path}
               className={`px-4 py-2 rounded-lg transition ${
                 location.pathname === link.path 
-                  ? 'bg-emerald-400 text-zinc-900' 
-                  : 'text-gray-300 hover:text-emerald-400'
+                  ? 'bg-sky-700 text-zinc-900' 
+                  : 'text-gray-300 hover:text-sky-700'
               }`}
             >
               {link.name}
@@ -63,7 +63,7 @@ export const Header = () => {
                 onClick={() => setIsMobileMenuOpen(false)} // Cierra el menú al hacer click
                 className={`px-4 py-3 rounded-lg transition-all ${
                   location.pathname === link.path 
-                    ? 'bg-emerald-400 text-zinc-900 font-bold' 
+                    ? 'bg-sky-700 text-zinc-900 font-bold' 
                     : 'text-gray-300 hover:bg-zinc-800'
                 }`}
               >

@@ -6,7 +6,7 @@ export const Footer = () => {
     <footer className="bg-zinc-900 border-t border-zinc-800 py-8">
       <div className="max-w-7xl mx-auto px-6 text-center">
         <div className="flex justify-center gap-6 mb-4">
-          <a href="https://github.com/lcrisantosi7-cris/" target="_blank" className="text-gray-400 hover:text-emerald-400">
+          <a href="https://github.com/lcrisantosi7-cris/" target="_blank" className="text-gray-400 hover:text-sky-700">
             <Github size={24} />
           </a>
           <a href="https://www.linkedin.com/in/luis-crisanto-silupú" target="_blank" className="text-gray-400 hover:text-sky-700">
