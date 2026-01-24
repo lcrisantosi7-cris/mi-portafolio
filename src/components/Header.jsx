@@ -41,7 +41,7 @@ export const Header = () => {
             <Zap size={28} className="text-[#39C5BB] relative z-10 group-hover:scale-110 transition-transform" />
             <div className="absolute inset-0 bg-[#39C5BB] blur-lg opacity-40 group-hover:opacity-80 transition-opacity"></div>
           </div>
-          <span className="text-2xl font-black tracking-tighter bg-linear-to-r from-[#39C5BB] via-[#8B5CF6] to-[#FF007F] bg-clip-text text-transparent">
+          <span className="text-2xl font-black tracking-tighter bg-gradient-to-r from-[#39C5BB] via-[#8B5CF6] to-[#FF007F] bg-clip-text text-transparent">
             LUIS CRISANTO
           </span>
         </Link>
