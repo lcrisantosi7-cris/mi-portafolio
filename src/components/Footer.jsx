@@ -7,7 +7,7 @@ export const Footer = () => {
   return (
     <footer className="relative bg-[#0f172a] overflow-hidden">
       {/* Línea divisoria con gradiente neón */}
-      <div className="w-full h-[1px] bg-gradient-to-r from-transparent via-[#39C5BB] to-transparent opacity-50"></div>
+      <div className="w-full h-px bg-linear-to-r from-transparent via-[#39C5BB] to-transparent opacity-50"></div>
       
       <div className="max-w-7xl mx-auto px-6 py-12">
         <div className="flex flex-col items-center gap-8">
@@ -41,7 +41,7 @@ export const Footer = () => {
             </p>
             
             <p className="text-gray-500 text-sm font-medium">
-              © {currentYear} <span className="bg-gradient-to-r from-[#39C5BB] to-[#8B5CF6] bg-clip-text text-transparent font-black">Luis Crisanto</span>. 
+              © {currentYear} <span className="bg-linear-to-r from-[#39C5BB] to-[#8B5CF6] bg-clip-text text-transparent font-black">Luis Crisanto</span>. 
               Built with React & Passion.
             </p>
           </div>

@@ -1,39 +1,60 @@
 import React from 'react'
-import { Link } from 'react-router-dom' // Usamos Link para no recargar la página
+import { Link } from 'react-router-dom'
+import { Rocket, ChevronRight } from 'lucide-react'
 
 const Home = () => {
   return (
-    <div className="min-h-[calc(100-80px)] flex items-center justify-center px-4 py-12 md:px-6">
-      <div className="text-center max-w-4xl">
-        {/* Tamaño de texto ajustado para móviles (text-4xl) y escalado en tablets (md:text-7xl) */}
-        <h1 className="text-4xl sm:text-5xl md:text-7xl font-bold text-emerald-400 mb-6 leading-tight">
-          Luis Angel Crisanto Silupú
+    <div className="relative min-h-screen flex items-center justify-center px-6 overflow-hidden">
+      {/* Elementos decorativos de fondo */}
+      <div className="absolute top-1/4 -left-20 w-96 h-96 bg-[#39C5BB]/10 blur-[120px] rounded-full"></div>
+      <div className="absolute bottom-1/4 -right-20 w-96 h-96 bg-[#8B5CF6]/10 blur-[120px] rounded-full"></div>
+
+      <div className="relative z-10 text-center max-w-5xl">
+        {/* Badge Tech */}
+        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-[#39C5BB]/30 bg-[#39C5BB]/5 text-[#39C5BB] text-xs font-bold tracking-widest uppercase mb-8 animate-bounce">
+          <Rocket size={14} /> Available for New Projects
+        </div>
+
+        <h1 className="text-5xl sm:text-7xl md:text-9xl font-black mb-8 leading-none tracking-tighter">
+          <span className="block text-white">LUIS ANGEL</span>
+          <span className="block bg-gradient-to-r from-[#39C5BB] via-[#8B5CF6] to-[#FF007F] bg-clip-text text-transparent bg-[length:200%_auto] animate-gradient-x">
+            CRISANTO
+          </span>
         </h1>
         
-        <p className="text-lg md:text-2xl text-gray-400 mb-4 font-medium">
-          Desarrollador Full Stack en Formación
-        </p>
-        
-        <p className="text-sm md:text-base text-gray-500 mb-10 max-w-2xl mx-auto">
-          Estudiante de 7mo ciclo de Ingeniería de Sistemas en la UCV especializado en arquitectura de sistemas y soluciones cloud.
-        </p>
+        <div className="space-y-6 mb-12">
+          <p className="text-xl md:text-3xl text-[#39C5BB] font-mono tracking-tighter">
+            &gt; Software Engineer // Full Stack Developer_
+          </p>
+          
+          <p className="text-base md:text-lg text-gray-400 max-w-2xl mx-auto leading-relaxed">
+            Especializado en <span className="text-white font-semibold">Arquitectura Cloud</span> y soluciones escalables. 
+            Actualmente cursando el 7mo ciclo en la UCV, transformando lógica compleja en experiencias digitales excepcionales.
+          </p>
+        </div>
 
-        {/* Cambiamos a flex-col en móviles para que los botones se apilen, y flex-row en pantallas grandes */}
-        <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+        <div className="flex flex-col sm:flex-row gap-6 justify-center items-center">
           <Link 
             to="/contact" 
-            className="w-full sm:w-auto px-8 py-4 bg-emerald-400 text-zinc-900 font-bold rounded-xl hover:bg-emerald-500 transition-all text-center shadow-lg shadow-emerald-400/10"
+            className="group relative w-full sm:w-auto px-10 py-4 bg-[#39C5BB] text-[#0f172a] font-black rounded-2xl overflow-hidden transition-all hover:scale-105 active:scale-95 shadow-[0_0_20px_rgba(57,197,187,0.4)]"
           >
-            Contáctame
+            <span className="relative z-10 flex items-center justify-center gap-2">
+              TRABAJEMOS JUNTOS <ChevronRight size={18} />
+            </span>
           </Link>
           
           <Link 
             to="/projects" 
-            className="w-full sm:w-auto px-8 py-4 border-2 border-emerald-400 text-emerald-400 font-bold rounded-xl hover:bg-emerald-400/10 transition-all text-center"
+            className="w-full sm:w-auto px-10 py-4 border-2 border-white/10 text-white font-black rounded-2xl hover:bg-white/5 hover:border-[#39C5BB]/50 transition-all"
           >
-            Ver Proyectos
+            VER PORTAFOLIO
           </Link>
         </div>
+      </div>
+
+      {/* Marca de agua lateral */}
+      <div className="absolute hidden lg:block -rotate-90 left-[-150px] top-1/2 text-white/5 font-black text-9xl pointer-events-none select-none">
+        EST. 2024
       </div>
     </div>
   )
