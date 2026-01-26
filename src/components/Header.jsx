@@ -16,7 +16,10 @@ export const Header = () => {
   const navLinks = [
     { name: 'Home', path: '/' },
     { name: 'Sobre Mí', path: '/about' },
+    { name: 'Experiencia', path: '/experience' },
     { name: 'Proyectos', path: '/projects' },
+    { name: 'Habilidades', path: '/skills' },
+    { name: 'Servicios', path: '/services' },
     { name: 'Contacto', path: '/contact' }
   ]
 
