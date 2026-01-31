@@ -48,8 +48,8 @@ const About = () => {
             <div className="h-[1px] w-12 bg-emerald-500" />
             <span className="text-emerald-400 font-mono text-xs uppercase tracking-[0.3em]">Discovery Mode</span>
           </div>
-          <h1 className="text-5xl md:text-7xl font-black text-white tracking-tighter italic">
-            SOBRE <span className="text-zinc-800 outline-text">MÍ</span>
+          <h1 className="text-5xl md:text-7xl font-black text-emerald-400 tracking-tighter italic">
+            SOBRE <span className="text-white outline-text">MÍ</span>
           </h1>
         </motion.div>
 
