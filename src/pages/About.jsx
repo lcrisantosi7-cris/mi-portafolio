@@ -1,161 +1,193 @@
 import React from 'react'
-import { GraduationCap, Code, Database, Cloud, Server } from 'lucide-react'
+import { Link } from 'react-router-dom'
+import { GraduationCap, Code, Server, Terminal, Cpu, Award, ChevronRight, Download } from 'lucide-react'
+import { motion } from 'framer-motion'
 
 const About = () => {
   const skills = [
-    'Node.js & Spring Boot',
-    'MySQL, MariaDB & SQL Server',
-    'React & Vue.js (en aprendizaje)',
-    'AWS Cloud (en aprendizaje)',
-    'PHP & Backend Development',
-    'Arquitectura de Sistemas (en aprendizaje)'
+    { name: 'Node.js', status: 'Mastering' },
+    { name: 'MySQL & SQL Server', status: 'Expert' },
+    { name: 'React & Vue.js', status: 'Learning' },
+    { name: 'AWS Cloud', status: 'Learning' },
+    { name: 'PHP & Backend', status: 'Expert' },
+    { name: 'System Architecture', status: 'Learning' }
   ]
 
   const stats = [
-    { label: 'Ciclo Actual', value: '7mo', icon: GraduationCap },
+    { label: 'Ciclo Actual', value: '7mo', icon: Cpu },
     { label: 'Universidad', value: 'UCV', icon: GraduationCap },
     { label: 'Especialidad', value: 'Full Stack', icon: Code },
     { label: 'Enfoque', value: 'Backend', icon: Server }
   ]
 
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: { opacity: 1, transition: { staggerChildren: 0.15 } }
+  }
+
+  const fadeInUp = {
+    hidden: { y: 30, opacity: 0 },
+    visible: { y: 0, opacity: 1, transition: { duration: 0.6, ease: "easeOut" } }
+  }
+
   return (
-    <div className="min-h-screen bg-zinc-900 relative overflow-hidden">
-      {/* Background Effects */}
-      <div className="absolute top-0 right-0 w-96 h-96 bg-emerald-400/5 rounded-full blur-3xl" />
-      <div className="absolute bottom-0 left-0 w-96 h-96 bg-emerald-400/5 rounded-full blur-3xl" />
+    <div className="min-h-screen bg-zinc-950 relative overflow-hidden pt-28 pb-20">
+      {/* Background Decor */}
+      <div className="absolute top-0 left-1/4 w-[500px] h-[500px] bg-emerald-500/5 rounded-full blur-[120px]" />
 
-      <div className="relative z-10 max-w-7xl mx-auto px-6 lg:px-24 py-24">
-        {/* Header */}
-        <div className="text-center mb-16">
-          <div className="inline-flex items-center gap-2 px-4 py-2 bg-emerald-400/10 border border-emerald-400/30 rounded-full mb-6">
-            <div className="w-2 h-2 bg-emerald-400 rounded-full animate-pulse" />
-            <span className="text-emerald-400 font-medium text-xs uppercase tracking-widest">
-              Disponible para trabajar
-            </span>
+      <motion.div
+        variants={containerVariants}
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true }}
+        className="relative z-10 max-w-7xl mx-auto px-6"
+      >
+        {/* HEADER SECTION */}
+        <motion.div variants={fadeInUp} className="mb-16">
+          <div className="flex items-center gap-3 mb-4">
+            <div className="h-[1px] w-12 bg-emerald-500" />
+            <span className="text-emerald-400 font-mono text-xs uppercase tracking-[0.3em]">Discovery Mode</span>
           </div>
-          <h1 className="text-4xl md:text-6xl font-bold text-white mb-4">
-            Sobre Mí
+          <h1 className="text-5xl md:text-7xl font-black text-white tracking-tighter italic">
+            SOBRE <span className="text-zinc-800 outline-text">MÍ</span>
           </h1>
-          <div className="h-1 w-24 bg-linear-to-r from-emerald-400 to-transparent mx-auto" />
-        </div>
+        </motion.div>
 
-        {/* Stats Grid */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-16">
+        {/* QUICK STATS GRID */}
+        <motion.div variants={fadeInUp} className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-16">
           {stats.map((stat, index) => (
-            <div 
-              key={index}
-              className="bg-zinc-800/50 border border-zinc-700 rounded-xl p-6 text-center hover:border-emerald-400/50 transition-all group"
-            >
-              <stat.icon className="w-8 h-8 mx-auto mb-3 text-emerald-400 group-hover:scale-110 transition-transform" />
-              <p className="text-2xl font-bold text-white mb-1">{stat.value}</p>
-              <p className="text-sm text-gray-400">{stat.label}</p>
+            <div key={index} className="relative group overflow-hidden bg-zinc-900/40 border border-zinc-800 p-6 rounded-2xl hover:border-emerald-500/40 transition-all">
+              <div className="absolute top-0 right-0 p-3 opacity-10 group-hover:opacity-30 transition-opacity">
+                <stat.icon size={40} className="text-emerald-400" />
+              </div>
+              <p className="text-zinc-500 text-xs uppercase tracking-widest mb-1">{stat.label}</p>
+              <p className="text-2xl font-bold text-white group-hover:text-emerald-400 transition-colors">{stat.value}</p>
             </div>
           ))}
-        </div>
+        </motion.div>
 
-        {/* Main Content */}
-        <div className="grid lg:grid-cols-2 gap-12 items-start">
-          {/* Left Column - Description */}
-          <div className="space-y-6">
-            <div>
-              <h2 className="text-2xl md:text-3xl font-bold text-white mb-4">
-                Desarrollador Full Stack en Formación
+        {/* MAIN CONTENT SPLIT */}
+        <div className="grid lg:grid-cols-12 gap-12">
+
+          {/* LEFT: BIO & SKILLS (8 Cols) */}
+          <div className="lg:col-span-7 space-y-12">
+            <motion.div variants={fadeInUp} className="prose prose-invert max-w-none">
+              <h2 className="text-3xl font-bold text-white mb-6 flex items-center gap-3">
+                <Terminal className="text-emerald-500" />
+                _ejecutar_perfil.sh
               </h2>
-              <p className="text-lg text-gray-300 leading-relaxed mb-4">
-                Estudiante de <span className="text-emerald-400 font-semibold">7mo ciclo de Ingeniería de Sistemas y Computación</span> en la Universidad César Vallejo.
+              <p className="text-zinc-400 text-lg leading-relaxed">
+                Como futuro <span className="text-white font-medium italic">Ingeniero de Sistemas</span>, mi enfoque va más allá de escribir código; se trata de diseñar arquitecturas que resuelvan problemas reales.
+                Actualmente, estoy en el <span className="text-emerald-400">7mo ciclo</span>, perfeccionando mi capacidad para construir sistemas robustos y escalables.
               </p>
-              <p className="text-gray-400 leading-relaxed mb-4">
-                Me especializo en el desarrollo backend con <span className="text-emerald-400">Node.js</span> y <span className="text-emerald-400">Spring Boot</span>, 
-                creando arquitecturas de sistemas escalables y soluciones eficientes en la nube con <span className="text-emerald-400">AWS</span>.
+              <p className="text-zinc-500 leading-relaxed">
+                Mi pasión reside en el <span className="text-zinc-300">Backend</span>, donde la lógica y la eficiencia dictan el éxito de una aplicación.
+                Sin embargo, mi curiosidad me mantiene en constante evolución, explorando el ecosistema Cloud y el Frontend moderno para ser un profesional <span className="text-emerald-400">T-Shaped</span>.
               </p>
-              <p className="text-gray-400 leading-relaxed">
-                Apasionado por crear aplicaciones robustas, mantener código limpio y seguir las mejores prácticas de desarrollo. 
-                Actualmente expandiendo mis conocimientos en <span className="text-emerald-400">React</span> y <span className="text-emerald-400">Vue.js</span> para el desarrollo frontend.
-              </p>
-            </div>
+            </motion.div>
 
-            {/* Technologies */}
-            <div>
-              <h3 className="text-xl font-bold text-white mb-4 flex items-center gap-2">
-                <Code className="w-5 h-5 text-emerald-400" />
-                Tecnologías Principales
+            {/* SKILLS BOX */}
+            <motion.div variants={fadeInUp} className="bg-zinc-900/20 border border-zinc-800/50 p-8 rounded-3xl">
+              <h3 className="text-white font-bold mb-8 flex items-center gap-2 uppercase text-sm tracking-widest">
+                <Award size={18} className="text-emerald-500" /> Core Tech Stack
               </h3>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {skills.map((skill, index) => (
-                  <div 
-                    key={index}
-                    className="flex items-center gap-3 group"
-                  >
-                    <div className="w-1.5 h-1.5 bg-emerald-400 rounded-full group-hover:scale-150 transition-transform" />
-                    <span className="text-sm text-gray-400 group-hover:text-emerald-400 transition-colors">
-                      {skill}
+                  <div key={index} className="flex items-center justify-between p-4 bg-zinc-900/50 rounded-xl border border-zinc-800 group hover:bg-emerald-500/5 transition-all">
+                    <div className="flex items-center gap-3">
+                      <div className="w-2 h-2 rounded-full bg-emerald-500 shadow-[0_0_8px_#10b981]" />
+                      <span className="text-zinc-300 group-hover:text-white transition-colors">{skill.name}</span>
+                    </div>
+                    <span className={`text-[10px] px-2 py-0.5 rounded border font-mono ${skill.status === 'Learning'
+                        ? 'border-yellow-500/30 text-yellow-500/70'
+                        : 'border-emerald-500/30 text-emerald-500/70'
+                      }`}>
+                      {skill.status}
                     </span>
                   </div>
                 ))}
               </div>
-            </div>
+            </motion.div>
 
-            {/* CTA Buttons */}
-            <div className="flex flex-wrap gap-4 pt-4">
-              <a href="/contact">
-                <button className="group relative px-8 py-3 bg-emerald-400 text-zinc-900 font-bold text-sm uppercase tracking-wider rounded-lg overflow-hidden">
-                  <span className="relative z-10">Hablemos</span>
-                  <div className="absolute inset-0 bg-emerald-500 transform scale-x-0 group-hover:scale-x-100 transition-transform origin-left" />
-                </button>
-              </a>
-              <a href="/resume.pdf" target="_blank" rel="noopener noreferrer">
-                <button className="group relative px-8 py-3 border-2 border-zinc-700 text-gray-300 hover:border-emerald-400 hover:text-emerald-400 font-bold text-sm uppercase tracking-wider rounded-lg transition-all">
-                  <span className="relative z-10">Ver CV</span>
-                </button>
-              </a>
-            </div>
+            {/* ACTION BUTTONS */}
+            <motion.div variants={fadeInUp} className="flex flex-wrap gap-4">
+              <Link to="/contact" className="px-8 py-4 bg-emerald-500 text-zinc-950 font-bold rounded-2xl hover:bg-emerald-400 transition-all flex items-center gap-2 group">
+                ¿Trabajamos juntos?
+                <ChevronRight className="group-hover:translate-x-1 transition-transform" />
+              </Link>
+              <button className="px-8 py-4 bg-zinc-900 border border-zinc-800 text-white font-bold rounded-2xl hover:border-zinc-600 transition-all flex items-center gap-2 group">
+                Descargar CV
+                <Download size={18} className="text-zinc-500 group-hover:text-emerald-400 transition-colors" />
+              </button>
+            </motion.div>
           </div>
 
-          {/* Right Column - Experience Card */}
-          <div className="relative">
-            <div className="absolute -top-4 -right-4 w-24 h-24 border-4 border-emerald-400/20 rounded-full" />
-            <div className="absolute -bottom-4 -left-4 w-32 h-32 border-4 border-emerald-400/20 rounded-full" />
-            
-            <div className="relative bg-linear-to-br from-zinc-800 to-zinc-900 p-8 rounded-2xl border border-zinc-700/50 shadow-2xl">
-              <div className="absolute inset-0 bg-linear-to-br from-emerald-400/10 to-transparent rounded-2xl" />
-              
-              <div className="relative z-10 space-y-6">
-                <h3 className="text-2xl font-bold text-white mb-6">
-                  Trayectoria Académica
-                </h3>
+          {/* RIGHT: TIMELINE / ACADEMIC (5 Cols) */}
+          <motion.div variants={fadeInUp} className="lg:col-span-5 relative">
+            <div className="sticky top-28 p-8 bg-zinc-900 border border-zinc-800 rounded-3xl overflow-hidden shadow-2xl">
+              {/* Decorative elements */}
+              <div className="absolute top-0 right-0 w-32 h-32 bg-emerald-500/5 rounded-full -mr-16 -mt-16" />
 
-                {/* Education Timeline */}
-                <div className="space-y-4">
-                  <div className="border-l-2 border-emerald-400 pl-4">
-                    <p className="text-emerald-400 font-semibold">2022 - 2025</p>
-                    <p className="text-white font-medium">Ingeniería de Sistemas</p>
-                    <p className="text-gray-400 text-sm">Universidad César Vallejo</p>
-                    <p className="text-gray-500 text-xs mt-2">Ciclo 7/10 - En curso</p>
+              <h3 className="text-2xl font-bold text-white mb-8">Trayectoria Académica</h3>
+
+              <div className="space-y-8 relative before:absolute before:left-[11px] before:top-2 before:bottom-2 before:w-[2px] before:bg-zinc-800">
+
+                {/* Item 1 */}
+                <div className="relative pl-10">
+                  <div className="absolute left-0 top-1.5 w-6 h-6 rounded-full bg-zinc-950 border-2 border-emerald-500 z-10" />
+                  <div>
+                    <span className="text-emerald-500 font-mono text-sm">2022 — Presente</span>
+                    <h4 className="text-white font-bold text-lg leading-tight mt-1">Ingeniería de Sistemas y Computación</h4>
+                    <p className="text-zinc-500 text-sm italic">Universidad César Vallejo</p>
+                    <div className="mt-3 flex gap-2 flex-wrap">
+                      {['Top 10%', 'Sistemas Operativos', 'Estructura de Datos'].map(tag => (
+                        <span key={tag} className="text-[10px] bg-zinc-800 text-zinc-400 px-2 py-1 rounded-md">{tag}</span>
+                      ))}
+                    </div>
                   </div>
+                </div>
 
-                  <div className="border-l-2 border-zinc-600 pl-4">
-                    <p className="text-gray-400 font-semibold">Cursos Relevantes</p>
-                    <ul className="text-gray-500 text-sm mt-2 space-y-1">
-                      <li>• Ingeniería Web</li>
-                      <li>• Arquitectura de Sistemas</li>
-                      <li>• Gestión de Datos II</li>
-                      <li>• Networking & Communications II</li>
-                      <li>• Gerencia de TI</li>
+                {/* Item 2 (Cursos) */}
+                <div className="relative pl-10">
+                  <div className="absolute left-0 top-1.5 w-6 h-6 rounded-full bg-zinc-950 border-2 border-zinc-700 z-10" />
+                  <div>
+                    <h4 className="text-zinc-300 font-bold text-lg leading-tight">Módulos de Especialidad</h4>
+                    <ul className="mt-4 space-y-3">
+                      {[
+                        { title: 'Ingeniería Web', desc: 'Full Stack Development focus' },
+                        { title: 'Arquitectura de Sistemas', desc: 'Design patterns & Clean Architecture' },
+                        { title: 'Gestión de Datos II', desc: 'Advanced SQL & Data Modeling' }
+                      ].map((course, i) => (
+                        <li key={i} className="group">
+                          <p className="text-zinc-300 text-sm font-medium group-hover:text-emerald-400 transition-colors tracking-tight">{course.title}</p>
+                          <p className="text-zinc-600 text-[11px]">{course.desc}</p>
+                        </li>
+                      ))}
                     </ul>
                   </div>
                 </div>
 
-                {/* Quote */}
-                <div className="bg-zinc-900/50 rounded-lg p-4 border-l-4 border-emerald-400">
-                  <p className="text-gray-300 italic text-sm">
-                    "Construyendo soluciones tecnológicas que impacten positivamente en la sociedad"
-                  </p>
-                </div>
+              </div>
+
+              {/* Terminal Quote */}
+              <div className="mt-10 p-4 bg-zinc-950 rounded-xl border border-zinc-800 font-mono text-[11px]">
+                <p className="text-emerald-500/70 leading-relaxed">
+                  <span className="text-zinc-600">$</span> locate motivation<br />
+                  <span className="text-zinc-400">"Mi meta es automatizar el presente para diseñar el futuro."</span>
+                </p>
               </div>
             </div>
-          </div>
+          </motion.div>
         </div>
-      </div>
+      </motion.div>
+
+      {/* CSS For Outline Text Effect */}
+      <style dangerouslySetInnerHTML={{
+        __html: `
+        .outline-text {
+          -webkit-text-stroke: 1px rgba(255,255,255,0.1);
+        }
+      `}} />
     </div>
   )
 }

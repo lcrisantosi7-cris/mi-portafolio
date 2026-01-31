@@ -1,100 +1,107 @@
 import React, { useState } from 'react'
-import { Github, ExternalLink, Code, Database, Server, Filter } from 'lucide-react'
+import { motion, AnimatePresence } from 'framer-motion'
+import { 
+  Github, ExternalLink, Code2, Database, Layout, 
+  Terminal, Globe, Cpu, School, ShoppingCart, 
+  Box, CreditCard, BarChart3, Calendar, Map, MessageSquare 
+} from 'lucide-react'
+import { Link } from 'react-router-dom'
 
 const Projects = () => {
   const [activeFilter, setActiveFilter] = useState('all')
 
   const filters = [
-    { id: 'all', name: 'Todos' },
-    { id: 'backend', name: 'Backend' },
-    { id: 'fullstack', name: 'Full Stack' },
-    { id: 'academic', name: 'Académicos' }
+    { id: 'all', label: 'Todo el Sistema' },
+    { id: 'backend', label: 'Backend API' },
+    { id: 'fullstack', label: 'Full Stack' },
+    { id: 'academic', label: 'Investigación' }
   ]
 
+  // Mapeo de datos con Iconos Lucide reales
   const projects = [
     {
       title: 'Sistema de Gestión Escolar',
-      description: 'Plataforma completa para la gestión de estudiantes, cursos y calificaciones con arquitectura MVC.',
-      image: '🎓',
-      tags: ['Spring Boot', 'MySQL', 'Thymeleaf', 'Bootstrap'],
+      description: 'Plataforma MVC integral para administración académica. Manejo de concurrencia y roles.',
+      icon: School,
+      tags: ['PHP', 'MySQL', 'CSS' , 'JavaScript', 'MVC'],
       category: 'fullstack',
       type: 'academic',
       github: 'https://github.com/lcrisantosi7-cris/Sistema-Gestion-Escolar',
-      status: 'Completado'
+      status: 'production' // Production = Completado
     },
     {
-      title: 'API REST de E-Commerce',
-      description: 'API RESTful para sistema de comercio electrónico con autenticación JWT y gestión de productos.',
-      image: '🛒',
+      title: 'API REST E-Commerce',
+      description: 'Arquitectura RESTful escalable con autenticación JWT, pasarela de pagos y gestión de inventario.',
+      icon: ShoppingCart,
       tags: ['Node.js', 'Express', 'MongoDB', 'JWT'],
       category: 'backend',
       type: 'personal',
       github: '#',
-      status: 'En desarrollo'
+      status: 'dev' // Dev = En desarrollo
     },
     {
-      title: 'Sistema de Inventario',
-      description: 'Aplicación para control de inventario con reportes en tiempo real y análisis de stock.',
-      image: '📦',
-      tags: ['PHP', 'MySQL', 'JavaScript', 'Chart.js'],
+      title: 'Control de Inventario',
+      description: 'Sistema logístico con algoritmos de predicción de stock y generación de reportes PDF/Excel.',
+      icon: Box,
+      tags: ['PHP', 'MySQL', 'JS', 'Chart.js'],
       category: 'fullstack',
       type: 'academic',
       github: '#',
       demo: '#',
-      status: 'Completado'
+      status: 'production'
     },
     {
       title: 'Microservicios de Pagos',
-      description: 'Arquitectura de microservicios para procesamiento de pagos con diferentes pasarelas.',
-      image: '💳',
-      tags: ['Spring Boot', 'RabbitMQ', 'Docker', 'PostgreSQL'],
+      description: 'Arquitectura distribuida para orquestación de pagos usando RabbitMQ para mensajería asíncrona.',
+      icon: CreditCard,
+      tags: ['PHP', 'RabbitMQ', 'Docker'],
       category: 'backend',
       type: 'personal',
       github: '#',
-      status: 'En desarrollo'
+      status: 'dev'
     },
     {
-      title: 'Dashboard Analytics',
-      description: 'Panel de control con métricas y visualizaciones en tiempo real para análisis de datos.',
-      image: '📊',
-      tags: ['React', 'Node.js', 'MongoDB', 'Chart.js'],
+      title: 'Analytics Dashboard',
+      description: 'Panel de visualización de datos en tiempo real con agregación de métricas de múltiples fuentes.',
+      icon: BarChart3,
+      tags: ['React', 'Node.js', 'MongoDB'],
       category: 'fullstack',
       type: 'personal',
       github: '#',
       demo: '#',
-      status: 'En desarrollo'
+      status: 'dev'
     },
     {
       title: 'Sistema de Reservas',
-      description: 'Plataforma de reservas online con calendario interactivo y notificaciones por email.',
-      image: '📅',
-      tags: ['Node.js', 'Vue.js', 'MySQL', 'AWS SES'],
+      description: 'Motor de reservas con validación de conflictos horarios y notificaciones transaccionales vía AWS SES.',
+      icon: Calendar,
+      tags: ['Node.js', 'Vue.js', 'AWS SES'],
       category: 'fullstack',
       type: 'academic',
       github: '#',
       demo: '#',
-      status: 'En desarrollo'
+      status: 'dev'
     },
     {
       title: 'API de Geolocalización',
-      description: 'Servicio REST para gestión de ubicaciones y cálculo de distancias con mapas interactivos.',
-      image: '🗺️',
-      tags: ['Spring Boot', 'PostgreSQL', 'Redis', 'Docker'],
+      description: 'Servicio backend para cálculos geoespaciales y optimización de rutas usando PostGIS.',
+      icon: Map,
+      tags: ['PHP', 'PostgreSQL', 'Redis'],
       category: 'backend',
       type: 'personal',
       github: '#',
-      status: 'En desarrollo'
+      status: 'dev'
     },
     {
-      title: 'Chat en Tiempo Real',
-      description: 'Aplicación de mensajería instantánea con WebSockets y rooms múltiples.',
-      image: '💬',
-      tags: ['Node.js', 'Socket.io', 'React', 'MongoDB'],
+      title: 'Real-Time Chat Engine',
+      description: 'Infraestructura de comunicación bidireccional escalable basada en eventos WebSockets.',
+      icon: MessageSquare,
+      tags: ['Node.js', 'Socket.io', 'React'],
       category: 'fullstack',
       type: 'personal',
       github: '#',
       demo: '#',
-      status: 'En desarrollo'
+      status: 'dev'
     }
   ]
 
@@ -103,154 +110,197 @@ const Projects = () => {
     : projects.filter(p => p.category === activeFilter || p.type === activeFilter)
 
   return (
-    <div className="min-h-screen bg-zinc-900 py-24 px-6 lg:px-24">
-      <div className="max-w-7xl mx-auto">
-        {/* Header */}
+    <div className="min-h-screen bg-zinc-950 py-28 px-6 relative">
+      {/* Background Dots */}
+      <div className="absolute inset-0 z-0 opacity-10" style={{ backgroundImage: 'radial-gradient(#3f3f46 1px, transparent 1px)', backgroundSize: '30px 30px' }}></div>
+
+      <div className="max-w-7xl mx-auto relative z-10">
+        
+        {/* HEADER */}
         <div className="text-center mb-16">
-          <div className="inline-flex items-center gap-2 px-4 py-2 bg-emerald-400/10 border border-emerald-400/30 rounded-full mb-6">
-            <Code className="w-4 h-4 text-emerald-400" />
-            <span className="text-emerald-400 font-medium text-xs uppercase tracking-widest">
-              Portafolio
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="inline-flex items-center gap-2 px-4 py-2 bg-zinc-900 border border-zinc-800 rounded-full mb-6 shadow-xl"
+          >
+            <Terminal className="w-4 h-4 text-emerald-500" />
+            <span className="text-zinc-300 font-mono text-xs uppercase tracking-widest">
+              ~/projects/portfolio
             </span>
-          </div>
-          <h1 className="text-4xl md:text-6xl font-bold text-white mb-4">
-            Mis Proyectos
-          </h1>
-          <p className="text-gray-400 max-w-2xl mx-auto">
-            Colección de proyectos académicos y personales que he desarrollado
-          </p>
-          <div className="h-1 w-24 bg-linear-to-r from-emerald-400 to-transparent mx-auto mt-6" />
+          </motion.div>
+          <motion.h1 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.1 }}
+            className="text-4xl md:text-6xl font-black text-white mb-6"
+          >
+            Ingeniería & <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-emerald-600">Desarrollo</span>
+          </motion.h1>
+          <motion.p className="text-zinc-400 max-w-2xl mx-auto text-lg">
+            Una colección de soluciones técnicas, desde arquitecturas backend robustas hasta interfaces modernas.
+          </motion.p>
         </div>
 
-        {/* Stats */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-12">
-          <div className="bg-zinc-800/50 p-4 rounded-xl border border-zinc-700 text-center">
-            <p className="text-3xl font-bold text-emerald-400 mb-1">{projects.length}</p>
-            <p className="text-gray-400 text-sm">Proyectos</p>
-          </div>
-          <div className="bg-zinc-800/50 p-4 rounded-xl border border-zinc-700 text-center">
-            <p className="text-3xl font-bold text-emerald-400 mb-1">
-              {projects.filter(p => p.status === 'Completado').length}
-            </p>
-            <p className="text-gray-400 text-sm">Completados</p>
-          </div>
-          <div className="bg-zinc-800/50 p-4 rounded-xl border border-zinc-700 text-center">
-            <p className="text-3xl font-bold text-emerald-400 mb-1">
-              {projects.filter(p => p.category === 'backend').length}
-            </p>
-            <p className="text-gray-400 text-sm">Backend</p>
-          </div>
-          <div className="bg-zinc-800/50 p-4 rounded-xl border border-zinc-700 text-center">
-            <p className="text-3xl font-bold text-emerald-400 mb-1">
-              {projects.filter(p => p.category === 'fullstack').length}
-            </p>
-            <p className="text-gray-400 text-sm">Full Stack</p>
-          </div>
-        </div>
-
-        {/* Filters */}
-        <div className="flex flex-wrap items-center gap-3 mb-12">
-          <Filter className="w-5 h-5 text-gray-400" />
-          {filters.map((filter) => (
-            <button
-              key={filter.id}
-              onClick={() => setActiveFilter(filter.id)}
-              className={`px-6 py-2 rounded-lg font-medium transition-all ${
-                activeFilter === filter.id
-                  ? 'bg-emerald-400 text-zinc-900'
-                  : 'bg-zinc-800 text-gray-400 hover:bg-zinc-700 hover:text-emerald-400'
-              }`}
-            >
-              {filter.name}
-            </button>
-          ))}
-        </div>
-
-        {/* Projects Grid */}
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {filteredProjects.map((project, index) => (
-            <div
-              key={index}
-              className="bg-linear-to-br from-zinc-800 to-zinc-900 rounded-xl border border-zinc-700 hover:border-emerald-400/50 transition-all group overflow-hidden"
-            >
-              {/* Project Icon/Image */}
-              <div className="bg-zinc-900 p-12 flex items-center justify-center border-b border-zinc-700 group-hover:bg-emerald-400/5 transition-colors">
-                <span className="text-7xl">{project.image}</span>
+        {/* STATS BAR (GitHub Style) */}
+        <motion.div 
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.2 }}
+          className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-12"
+        >
+          {[
+            { label: 'Total Repos', value: projects.length, icon: Database },
+            { label: 'Producción', value: projects.filter(p => p.status === 'production').length, icon: Globe },
+            { label: 'Backend', value: projects.filter(p => p.category === 'backend').length, icon: ServerIcon },
+            { label: 'Full Stack', value: projects.filter(p => p.category === 'fullstack').length, icon: Layout }
+          ].map((stat, i) => (
+            <div key={i} className="bg-zinc-900/50 border border-zinc-800 p-4 rounded-xl flex items-center justify-between hover:border-emerald-500/30 transition-colors">
+              <div>
+                <p className="text-2xl font-bold text-white font-mono">{stat.value}</p>
+                <p className="text-xs text-zinc-500 uppercase tracking-wider">{stat.label}</p>
               </div>
-
-              {/* Content */}
-              <div className="p-6">
-                <div className="flex items-start justify-between mb-3">
-                  <h3 className="text-xl font-bold text-white group-hover:text-emerald-400 transition-colors">
-                    {project.title}
-                  </h3>
-                  <span className={`px-2 py-1 text-xs rounded-full ${
-                    project.status === 'Completado'
-                      ? 'bg-emerald-400/10 text-emerald-400'
-                      : 'bg-yellow-400/10 text-yellow-400'
-                  }`}>
-                    {project.status}
-                  </span>
-                </div>
-
-                <p className="text-gray-400 text-sm mb-4 line-clamp-2">
-                  {project.description}
-                </p>
-
-                {/* Tags */}
-                <div className="flex flex-wrap gap-2 mb-4">
-                  {project.tags.map((tag, idx) => (
-                    <span
-                      key={idx}
-                      className="px-3 py-1 bg-zinc-900 text-gray-400 text-xs rounded-full border border-zinc-700"
-                    >
-                      {tag}
-                    </span>
-                  ))}
-                </div>
-
-                {/* Links */}
-                <div className="flex gap-3">
-                  {project.github && (
-                    <a
-                      href={project.github}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="flex-1 flex items-center justify-center gap-2 px-4 py-2 bg-zinc-900 hover:bg-zinc-800 text-gray-400 hover:text-emerald-400 rounded-lg transition-all border border-zinc-700 hover:border-emerald-400/50"
-                    >
-                      <Github className="w-4 h-4" />
-                      <span className="text-sm font-medium">Código</span>
-                    </a>
-                  )}
-                  {project.demo && (
-                    <a
-                      href={project.demo}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="flex-1 flex items-center justify-center gap-2 px-4 py-2 bg-emerald-400 hover:bg-emerald-500 text-zinc-900 rounded-lg transition-all"
-                    >
-                      <ExternalLink className="w-4 h-4" />
-                      <span className="text-sm font-medium">Demo</span>
-                    </a>
-                  )}
-                </div>
-              </div>
+              <stat.icon className="text-emerald-500/20" size={24} />
             </div>
           ))}
+        </motion.div>
+
+        {/* CUSTOM TABS */}
+        <div className="flex justify-center mb-12">
+          <div className="flex flex-wrap justify-center gap-2 p-1.5 bg-zinc-900/80 border border-zinc-800 rounded-2xl backdrop-blur-sm">
+            {filters.map((filter) => (
+              <button
+                key={filter.id}
+                onClick={() => setActiveFilter(filter.id)}
+                className={`relative px-6 py-2.5 rounded-xl text-sm font-medium transition-all duration-300 z-10 ${
+                  activeFilter === filter.id ? 'text-zinc-950' : 'text-zinc-400 hover:text-white'
+                }`}
+              >
+                {activeFilter === filter.id && (
+                  <motion.div
+                    layoutId="activeTab"
+                    className="absolute inset-0 bg-emerald-500 rounded-xl -z-10"
+                    transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
+                  />
+                )}
+                {filter.label}
+              </button>
+            ))}
+          </div>
         </div>
 
-        {/* CTA */}
-        <div className="text-center mt-16">
-          <p className="text-gray-400 mb-6">¿Tienes un proyecto en mente?</p>
-          <a href="/contact">
-            <button className="px-8 py-3 bg-emerald-400 text-zinc-900 font-bold rounded-lg hover:bg-emerald-500 transition">
-              Trabajemos Juntos
+        {/* PROJECTS GRID */}
+        <motion.div layout className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <AnimatePresence mode='popLayout'>
+            {filteredProjects.map((project) => (
+              <motion.div
+                layout
+                key={project.title}
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.9 }}
+                transition={{ duration: 0.3 }}
+                className="group relative bg-zinc-900 border border-zinc-800 rounded-2xl overflow-hidden hover:border-emerald-500/50 hover:shadow-2xl hover:shadow-emerald-500/10 transition-all duration-300 flex flex-col h-full"
+              >
+                {/* Visual Header (No Images, just CSS Patterns) */}
+                <div className={`h-32 w-full relative overflow-hidden flex items-center justify-center bg-gradient-to-br ${
+                  project.category === 'backend' 
+                    ? 'from-zinc-800 to-zinc-900' 
+                    : 'from-zinc-800 via-zinc-900 to-emerald-950/30'
+                }`}>
+                  {/* Pattern Overlay */}
+                  <div className="absolute inset-0 opacity-20" style={{ backgroundImage: 'radial-gradient(#10b981 1px, transparent 1px)', backgroundSize: '16px 16px' }}></div>
+                  
+                  {/* Floating Icon */}
+                  <div className="relative z-10 p-4 bg-zinc-950/50 backdrop-blur-md rounded-2xl border border-white/10 shadow-xl group-hover:scale-110 transition-transform duration-500">
+                    <project.icon size={32} className={project.category === 'backend' ? 'text-blue-400' : 'text-emerald-400'} />
+                  </div>
+
+                  {/* Status Badge */}
+                  <div className={`absolute top-4 right-4 px-2 py-1 rounded text-[10px] font-bold uppercase tracking-wider border backdrop-blur-md ${
+                    project.status === 'production' 
+                      ? 'bg-emerald-500/20 text-emerald-400 border-emerald-500/30' 
+                      : 'bg-yellow-500/10 text-yellow-400 border-yellow-500/20'
+                  }`}>
+                    {project.status === 'production' ? 'Completado' : 'En Desarrollo'}
+                  </div>
+                </div>
+
+                {/* Content Body */}
+                <div className="p-6 flex-1 flex flex-col">
+                  <div className="flex justify-between items-start mb-3">
+                    <h3 className="text-xl font-bold text-white leading-tight group-hover:text-emerald-400 transition-colors">
+                      {project.title}
+                    </h3>
+                  </div>
+
+                  <p className="text-zinc-400 text-sm leading-relaxed mb-6 flex-1">
+                    {project.description}
+                  </p>
+
+                  {/* Tech Stack Pills */}
+                  <div className="flex flex-wrap gap-2 mb-6">
+                    {project.tags.map((tag, idx) => (
+                      <span key={idx} className="px-2.5 py-1 bg-zinc-950 border border-zinc-800 rounded-md text-xs text-zinc-400 font-mono hover:border-zinc-600 transition-colors cursor-default">
+                        {tag}
+                      </span>
+                    ))}
+                  </div>
+
+                  {/* Actions Footer */}
+                  <div className="flex items-center gap-3 pt-4 border-t border-zinc-800/50">
+                    {project.github && (
+                      <a href={project.github} target="_blank" rel="noopener noreferrer" 
+                        className="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-lg bg-zinc-950 border border-zinc-800 text-zinc-300 text-sm font-medium hover:bg-zinc-800 hover:text-white transition-all group/btn">
+                        <Github size={16} /> Code
+                      </a>
+                    )}
+                    {project.demo && (
+                      <a href={project.demo} target="_blank" rel="noopener noreferrer"
+                        className="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-lg bg-emerald-600/10 border border-emerald-600/20 text-emerald-400 text-sm font-medium hover:bg-emerald-600/20 transition-all">
+                        <ExternalLink size={16} /> Demo
+                      </a>
+                    )}
+                  </div>
+                </div>
+              </motion.div>
+            ))}
+          </AnimatePresence>
+        </motion.div>
+
+        {/* Call to Action Footer */}
+        <div className="mt-24 text-center">
+          <p className="text-zinc-500 mb-6">¿Interesado en la arquitectura de estos proyectos?</p>
+          <Link to="/contact">
+            <button className="px-8 py-3 rounded-xl bg-emerald-500 text-zinc-950 font-bold hover:bg-emerald-400 hover:scale-105 transition-all shadow-[0_0_20px_rgba(16,185,129,0.3)]">
+              Contactar para Colaboración
             </button>
-          </a>
+          </Link>
         </div>
+
       </div>
     </div>
   )
 }
+
+// Pequeño helper para el icono de Server que no se importó arriba por brevedad
+const ServerIcon = ({ className, size }) => (
+  <svg 
+    xmlns="http://www.w3.org/2000/svg" 
+    width={size} 
+    height={size} 
+    viewBox="0 0 24 24" 
+    fill="none" 
+    stroke="currentColor" 
+    strokeWidth="2" 
+    strokeLinecap="round" 
+    strokeLinejoin="round" 
+    className={className}
+  >
+    <rect width="20" height="8" x="2" y="2" rx="2" ry="2"/>
+    <rect width="20" height="8" x="2" y="14" rx="2" ry="2"/>
+    <line x1="6" x2="6.01" y1="6" y2="6"/>
+    <line x1="6" x2="6.01" y1="18" y2="18"/>
+  </svg>
+)
 
 export default Projects

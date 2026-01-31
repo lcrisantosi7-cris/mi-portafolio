@@ -2,6 +2,7 @@ import React from 'react'
 import { Routes, Route } from 'react-router-dom'
 import { Header } from './components/Header'
 import { Footer } from './components/Footer'
+import WelcomeRobot from './components/WelcomeRobot'
 import Home from './pages/Home'
 import About from './pages/About'
 import Experience from './pages/Experience'
@@ -15,6 +16,7 @@ function App() {
   return (
     <div className="min-h-screen bg-zinc-900 text-white">
       <Header />
+      <WelcomeRobot />
       <main className="pt-20">
         <Routes>
           <Route path="/" element={<Home />} />

@@ -1,156 +1,208 @@
 import React from 'react'
-import { Calendar, GraduationCap, BookOpen, Award } from 'lucide-react'
+import { 
+  Calendar, GraduationCap, BookOpen, Award, 
+  Terminal, Cpu, Network, Database, Globe, 
+  Code2, Briefcase, Zap, Layers 
+} from 'lucide-react'
+import { motion } from 'framer-motion'
+import { Link } from 'react-router-dom'
 
 const Experience = () => {
+  // Datos estructurados con iconos profesionales
   const cycles = [
     {
       cycle: 'Ciclo I',
-      courses: ['Introducción a la Ingeniería de Sistemas', 'Fundamentos de Programación', 'Matemática I'],
-      icon: '🎯'
+      label: 'Fundamentos de Ingeniería',
+      courses: ['Introducción a Sistemas', 'Lógica de Programación', 'Cáculo General'],
+      icon: Terminal,
+      year: '2022-1'
     },
     {
       cycle: 'Ciclo II',
-      courses: ['Metodologías de Programación', 'Sistémica', 'Matemática II'],
-      icon: '💻'
+      label: 'Algoritmia & Lógica',
+      courses: ['Metodologías de Programación', 'Pensamiento Sistémico', 'Cálculo I'],
+      icon: Code2,
+      year: '2022-2'
     },
     {
       cycle: 'Ciclo III',
-      courses: ['Estructura de Datos', 'Electrónica y Circuitos Digitales', 'Matemática III'],
-      icon: '⚡'
+      label: 'Estructuras & Hardware',
+      courses: ['Estructura de Datos', 'Circuitos Digitales', 'Cálculo II'],
+      icon: Cpu,
+      year: '2023-1'
     },
     {
       cycle: 'Ciclo IV',
-      courses: ['Programación Orientada a Objetos', 'Análisis y Diseño de Sistemas', 'Gestión de Datos e Información I', 'Fundamentos de Tecnologías de Información'],
-      icon: '🚀'
+      label: 'Análisis & Diseño',
+      courses: ['POO Avanzado', 'Análisis de Sistemas', 'Modelado de Datos I'],
+      icon: Layers,
+      year: '2023-2'
     },
     {
       cycle: 'Ciclo V',
-      courses: ['Ingeniería de Software', 'Arquitectura de Sistemas de Información', 'Gestión de Datos e Información II', 'Redes y Comunicaciones I'],
-      icon: '🏗️'
+      label: 'Arquitectura de Software',
+      courses: ['Ingeniería de Software', 'Arquitectura Empresarial', 'Gestión de Datos II'],
+      icon: Database,
+      year: '2024-1'
     },
     {
       cycle: 'Ciclo VI',
-      courses: ['Ingeniería Web', 'Networking and Communications II', 'Fundamentos de Modelado y Animación', 'Gerencia de la Tecnología de la Información'],
-      icon: '🌐',
-      current: true
+      label: 'Desarrollo Web & Redes',
+      courses: ['Ingeniería Web Fullstack', 'Networking Avanzado', 'Gestión de TI'],
+      icon: Network,
+      current: true,
+      year: '2024-2'
     }
   ]
 
   const achievements = [
-    {
-      title: 'Proyectos Completados',
-      value: '8+',
-      icon: Award,
-      color: 'emerald'
-    },
-    {
-      title: 'Cursos Aprobados',
-      value: '20+',
-      icon: BookOpen,
-      color: 'blue'
-    },
-    {
-      title: 'Ciclos Completados',
-      value: '6/10',
-      icon: GraduationCap,
-      color: 'purple'
-    }
+    { title: 'Proyectos', value: '8+', icon: Briefcase },
+    { title: 'Créditos Aprobados', value: '116+', icon: BookOpen },
+    { title: 'Promedio Ponderado', value: 'Top 10', icon: Award }
   ]
 
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: { opacity: 1, transition: { staggerChildren: 0.2 } }
+  }
+
+  const itemVariants = {
+    hidden: { y: 20, opacity: 0 },
+    visible: { y: 0, opacity: 1, transition: { duration: 0.5 } }
+  }
+
   return (
-    <div className="min-h-screen bg-zinc-900 py-24 px-6 lg:px-24">
-      <div className="max-w-7xl mx-auto">
-        {/* Header */}
-        <div className="text-center mb-16">
-          <div className="inline-flex items-center gap-2 px-4 py-2 bg-emerald-400/10 border border-emerald-400/30 rounded-full mb-6">
-            <Calendar className="w-4 h-4 text-emerald-400" />
-            <span className="text-emerald-400 font-medium text-xs uppercase tracking-widest">
-              Trayectoria Académica
+    <div className="min-h-screen bg-zinc-950 py-28 px-6 relative overflow-hidden">
+      {/* Background sutil tipo 'Grid' */}
+      <div className="absolute inset-0 z-0 opacity-[0.03]" 
+           style={{ backgroundImage: `linear-gradient(#fff 1px, transparent 1px), linear-gradient(90deg, #fff 1px, transparent 1px)`, backgroundSize: '50px 50px' }}>
+      </div>
+
+      <motion.div 
+        variants={containerVariants}
+        initial="hidden"
+        animate="visible"
+        className="max-w-6xl mx-auto relative z-10"
+      >
+        {/* HEADER SECTION */}
+        <div className="text-center mb-20">
+          <motion.div variants={itemVariants} className="inline-flex items-center gap-2 px-4 py-1.5 bg-emerald-500/10 border border-emerald-500/20 rounded-full mb-6">
+            <span className="flex h-2 w-2 relative">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+              <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
             </span>
-          </div>
-          <h1 className="text-4xl md:text-6xl font-bold text-white mb-4">
-            Mi Experiencia
-          </h1>
-          <p className="text-gray-400 max-w-2xl mx-auto">
-            Recorrido académico en Ingeniería de Sistemas y Computación
-          </p>
-          <div className="h-1 w-24 bg-linear-to-r from-emerald-400 to-transparent mx-auto mt-6" />
+            <span className="text-emerald-400 font-mono text-[10px] uppercase tracking-widest">
+              Roadmap Académico
+            </span>
+          </motion.div>
+          
+          <motion.h1 variants={itemVariants} className="text-5xl md:text-6xl font-black text-white mb-6 tracking-tight">
+            Experiencia & <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-emerald-600">Formación</span>
+          </motion.h1>
+          
+          <motion.p variants={itemVariants} className="text-zinc-400 max-w-xl mx-auto text-lg">
+            Mi evolución técnica a través de la Ingeniería de Sistemas, desde los fundamentos lógicos hasta arquitecturas complejas.
+          </motion.p>
         </div>
 
-        {/* Achievements */}
-        <div className="grid md:grid-cols-3 gap-6 mb-16">
-          {achievements.map((achievement, index) => (
-            <div 
-              key={index}
-              className="bg-zinc-800/50 border border-zinc-700 rounded-xl p-6 text-center hover:border-emerald-400/50 transition-all group"
-            >
-              <achievement.icon className="w-12 h-12 mx-auto mb-4 text-emerald-400 group-hover:scale-110 transition-transform" />
-              <p className="text-3xl font-bold text-white mb-2">{achievement.value}</p>
-              <p className="text-gray-400">{achievement.title}</p>
+        {/* KPI CARDS (Achievements) */}
+        <motion.div variants={itemVariants} className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-24">
+          {achievements.map((item, idx) => (
+            <div key={idx} className="bg-zinc-900/40 backdrop-blur-sm border border-zinc-800 p-6 rounded-2xl flex items-center gap-5 hover:border-emerald-500/30 transition-all group">
+              <div className="p-3 bg-zinc-800 rounded-xl group-hover:bg-emerald-500/10 transition-colors">
+                <item.icon className="w-8 h-8 text-zinc-400 group-hover:text-emerald-400 transition-colors" />
+              </div>
+              <div>
+                <p className="text-3xl font-bold text-white mb-1 group-hover:text-emerald-400 transition-colors">{item.value}</p>
+                <p className="text-xs text-zinc-500 uppercase tracking-wider font-semibold">{item.title}</p>
+              </div>
             </div>
           ))}
-        </div>
+        </motion.div>
 
-        {/* Timeline */}
+        {/* TIMELINE PRINCIPAL */}
         <div className="relative">
-          {/* Vertical Line */}
-          <div className="hidden md:block absolute left-1/2 transform -translate-x-1/2 w-0.5 h-full bg-zinc-700" />
+          {/* Línea Central Vertical */}
+          <div className="hidden md:block absolute left-1/2 transform -translate-x-1/2 w-[2px] h-full bg-zinc-800/50">
+            <div className="absolute top-0 left-0 w-full h-1/2 bg-gradient-to-b from-emerald-500 to-transparent opacity-50"></div>
+          </div>
 
-          <div className="space-y-12">
+          <div className="space-y-16">
             {cycles.map((item, index) => (
-              <div 
+              <motion.div 
                 key={index}
-                className={`relative flex items-center ${
-                  index % 2 === 0 ? 'md:flex-row' : 'md:flex-row-reverse'
+                variants={itemVariants}
+                className={`relative flex flex-col md:flex-row items-center ${
+                  index % 2 === 0 ? '' : 'md:flex-row-reverse'
                 }`}
               >
-                {/* Timeline Dot */}
-                <div className="hidden md:flex absolute left-1/2 transform -translate-x-1/2 w-12 h-12 bg-zinc-900 border-4 border-emerald-400 rounded-full items-center justify-center text-2xl z-10">
-                  {item.icon}
-                </div>
-
-                {/* Content Card */}
-                <div className={`w-full md:w-5/12 ${index % 2 === 0 ? 'md:text-right md:pr-8' : 'md:pl-8'}`}>
-                  <div className={`bg-linear-to-br from-zinc-800 to-zinc-900 p-6 rounded-xl border ${
-                    item.current ? 'border-emerald-400' : 'border-zinc-700'
-                  } hover:border-emerald-400/50 transition-all group`}>
-                    {item.current && (
-                      <span className="inline-block px-3 py-1 bg-emerald-400 text-zinc-900 text-xs font-bold rounded-full mb-3">
-                        ACTUAL
-                      </span>
-                    )}
-                    <h3 className="text-2xl font-bold text-white mb-4 flex items-center gap-2 justify-start md:justify-end">
-                      <span className="text-3xl">{item.icon}</span>
+                {/* 1. DATA LATERAL (Fecha/Label) */}
+                <div className={`w-full md:w-5/12 mb-4 md:mb-0 ${index % 2 === 0 ? 'md:text-right md:pr-12' : 'md:text-left md:pl-12 order-2 md:order-1'}`}>
+                  <div className="inline-block">
+                    <span className="text-emerald-500 font-mono text-sm font-bold mb-1 block">{item.year}</span>
+                    <h3 className={`text-2xl font-bold text-white ${item.current ? 'text-emerald-400' : ''}`}>
                       {item.cycle}
                     </h3>
-                    <div className="space-y-2">
+                    <p className="text-zinc-500 text-sm uppercase tracking-wider font-medium mt-1">{item.label}</p>
+                  </div>
+                </div>
+
+                {/* 2. ICONO CENTRAL (Connector) */}
+                <div className="absolute left-1/2 transform -translate-x-1/2 flex items-center justify-center z-10 hidden md:flex">
+                  <div className={`w-12 h-12 rounded-full border-4 flex items-center justify-center bg-zinc-950 transition-all duration-300 ${
+                    item.current 
+                      ? 'border-emerald-500 shadow-[0_0_20px_rgba(16,185,129,0.4)] scale-110' 
+                      : 'border-zinc-800 group-hover:border-zinc-600'
+                  }`}>
+                    <item.icon size={20} className={item.current ? 'text-emerald-400' : 'text-zinc-600'} />
+                  </div>
+                </div>
+
+                {/* 3. CARD DE CONTENIDO */}
+                <div className={`w-full md:w-5/12 ${index % 2 === 0 ? 'md:pl-12' : 'md:pr-12 order-1 md:order-2'}`}>
+                  <div className={`relative p-6 rounded-2xl border transition-all duration-300 hover:-translate-y-1 ${
+                    item.current 
+                      ? 'bg-zinc-900/80 border-emerald-500/50 shadow-lg shadow-emerald-500/5' 
+                      : 'bg-zinc-900/30 border-zinc-800 hover:border-zinc-600 hover:bg-zinc-900'
+                  }`}>
+                    
+                    {/* Badge "En curso" */}
+                    {item.current && (
+                      <div className="absolute -top-3 -right-3 px-3 py-1 bg-emerald-500 text-zinc-950 text-[10px] font-bold uppercase rounded-full shadow-lg">
+                        En Progreso
+                      </div>
+                    )}
+
+                    <div className="space-y-3">
                       {item.courses.map((course, idx) => (
-                        <div 
-                          key={idx}
-                          className="flex items-start gap-2 text-gray-400 text-sm group-hover:text-emerald-400 transition-colors"
-                        >
-                          <span className="text-emerald-400 mt-1">•</span>
-                          <span>{course}</span>
+                        <div key={idx} className="flex items-center gap-3 group/item">
+                          <Zap size={14} className={`mt-0.5 transition-colors ${item.current ? 'text-emerald-500' : 'text-zinc-700 group-hover/item:text-emerald-500'}`} />
+                          <span className="text-zinc-300 text-sm font-medium group-hover/item:text-white transition-colors">
+                            {course}
+                          </span>
                         </div>
                       ))}
                     </div>
                   </div>
                 </div>
-              </div>
+              </motion.div>
             ))}
           </div>
         </div>
 
-        {/* CTA */}
-        <div className="text-center mt-16">
-          <p className="text-gray-400 mb-6">¿Quieres saber más sobre mi trabajo?</p>
-          <a href="/projects">
-            <button className="px-8 py-3 bg-emerald-400 text-zinc-900 font-bold rounded-lg hover:bg-emerald-500 transition">
-              Ver mis Proyectos
+        {/* FINAL CTA */}
+        <motion.div variants={itemVariants} className="text-center mt-24">
+          <Link to="/projects">
+            <button className="group relative px-8 py-4 bg-transparent border border-zinc-700 hover:border-emerald-500 text-zinc-300 hover:text-emerald-400 font-bold rounded-xl transition-all overflow-hidden">
+              <span className="relative z-10 flex items-center gap-2">
+                Ver Portafolio de Código <Globe size={18} />
+              </span>
+              <div className="absolute inset-0 bg-emerald-500/5 transform scale-x-0 group-hover:scale-x-100 transition-transform origin-left" />
             </button>
-          </a>
-        </div>
-      </div>
+          </Link>
+        </motion.div>
+
+      </motion.div>
     </div>
   )
 }

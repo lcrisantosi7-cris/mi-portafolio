@@ -1,291 +1,284 @@
 import React from 'react'
-import { Server, Code, Database, Cloud, Layers, Zap, CheckCircle, ArrowRight } from 'lucide-react'
+import { motion } from 'framer-motion'
+import { 
+  Server, Code2, Database, Cloud, Layers, Zap, 
+  CheckCircle2, ArrowRight, MessageSquare, FileText, 
+  Terminal, Rocket, ShieldCheck, Clock, Users 
+} from 'lucide-react'
+import { Link } from 'react-router-dom'
 
 const Services = () => {
   const services = [
     {
       icon: Server,
-      title: 'Desarrollo Backend',
-      description: 'Creación de APIs RESTful robustas y escalables con Node.js, Spring Boot y PHP.',
+      title: 'Arquitectura Backend',
+      description: 'Desarrollo de núcleos lógicos robustos. Priorizo la seguridad, la escalabilidad y la limpieza del código.',
       features: [
-        'APIs RESTful seguras',
-        'Arquitectura de microservicios',
-        'Autenticación JWT y OAuth2',
-        'Integración con servicios externos',
-        'Documentación API con Swagger'
+        'APIs RESTful & GraphQL',
+        'Microservicios con Spring Boot',
+        'Autenticación OAuth2 / JWT',
+        'Integración de Pasarelas de Pago'
       ],
-      technologies: ['Node.js', 'Spring Boot', 'PHP'],
-      color: 'emerald',
-      //price: 'Desde $500'
+      technologies: ['Node.js', 'Spring Boot', 'PHP', 'Swagger'],
+      color: 'text-emerald-400'
     },
     {
       icon: Database,
-      title: 'Gestión de Bases de Datos',
-      description: 'Diseño, optimización e implementación de bases de datos relacionales y NoSQL.',
+      title: 'Ingeniería de Datos',
+      description: 'Diseño de esquemas eficientes para asegurar la integridad y velocidad de acceso a la información.',
       features: [
-        'Modelado de datos eficiente',
-        'Optimización de queries',
-        'Migraciones y backups',
-        'Implementación de índices',
-        'Consultas complejas SQL'
+        'Modelado Relacional (ERD)',
+        'Optimización de Consultas SQL',
+        'Procedimientos Almacenados',
+        'Migración & Backups'
       ],
-      technologies: ['MySQL', 'SQL Server'],
-      color: 'blue',
-      //price: 'Desde $300'
+      technologies: ['MySQL', 'PostgreSQL', 'SQL Server', 'Redis'],
+      color: 'text-blue-400'
     },
     {
-      icon: Code,
+      icon: Code2,
       title: 'Desarrollo Full Stack',
-      description: 'Aplicaciones web completas desde el frontend hasta el backend con tecnologías modernas.',
+      description: 'Soluciones integrales de extremo a extremo. Interfaces reactivas conectadas a lógicas de negocio complejas.',
       features: [
-        'Interfaces responsive',
-        'SPAs con React/Vue',
-        'Backend escalable',
-        'Integración frontend-backend',
-        'Despliegue en producción'
+        'SPA con React / Vue',
+        'Dashboards Administrativos',
+        'SSR con Next.js',
+        'Integración en tiempo real'
       ],
-      technologies: ['React', 'Vue.js', 'Node.js', 'Tailwind CSS'],
-      color: 'purple',
-      //price: 'Desde $800'
+      technologies: ['React', 'Tailwind', 'TypeScript', 'Axios'],
+      color: 'text-purple-400'
     },
     {
       icon: Cloud,
-      title: 'Implementación Cloud',
-      description: 'Despliegue y configuración de aplicaciones en servicios cloud como AWS.',
+      title: 'Cloud & DevOps',
+      description: 'Infraestructura como código. Despliegue sus aplicaciones con arquitecturas modernas y resilientes.',
       features: [
-        'Configuración de servidores',
-        'CI/CD pipelines',
-        'Contenedorización con Docker',
-        'Monitoreo y logs',
-        'Escalabilidad automática'
+        'Contenedorización Docker',
+        'CI/CD Pipelines',
+        'Configuración de VPS/AWS',
+        'Monitoreo de Logs'
       ],
-      technologies: ['AWS', 'Docker', 'Nginx'],
-      color: 'orange',
-      //price: 'Desde $400'
+      technologies: ['AWS', 'Docker', 'Nginx', 'GitHub Actions'],
+      color: 'text-orange-400'
     },
     {
       icon: Layers,
-      title: 'Arquitectura de Sistemas',
-      description: 'Diseño de arquitecturas escalables y mantenibles para proyectos complejos.',
+      title: 'Consultoría de Software',
+      description: 'Análisis técnico para proyectos existentes. Refactorización y modernización de sistemas legacy.',
       features: [
-        'Análisis de requerimientos',
-        'Diseño de arquitectura',
-        'Patrones de diseño',
-        'Documentación técnica',
-        'Mejores prácticas'
+        'Auditoría de Código',
+        'Patrones de Diseño',
+        'Diagramas UML/C4',
+        'Selección de Tech Stack'
       ],
-      technologies: ['UML', 'Microservicios', 'MVC', 'Clean Architecture'],
-      color: 'teal',
-      //price: 'Desde $600'
+      technologies: ['Clean Arch', 'SOLID', 'MVC', 'Scrum'],
+      color: 'text-teal-400'
     },
     {
       icon: Zap,
-      title: 'Optimización & Performance',
-      description: 'Mejora del rendimiento de aplicaciones existentes y optimización de código.',
+      title: 'Optimización',
+      description: 'Mejora del rendimiento y tiempos de respuesta para aplicaciones de alto tráfico.',
       features: [
-        'Análisis de performance',
-        'Optimización de queries',
-        'Refactorización de código',
-        'Implementación de cache',
-        'Reducción de tiempo de carga'
+        'Caching Strategies',
+        'Refactorización de Algoritmos',
+        'Load Balancing',
+        'Database Indexing'
       ],
-      technologies: ['Redis', 'Performance Testing', 'Code Review'],
-      color: 'yellow',
-      //price: 'Desde $350'
+      technologies: ['Performance', 'Debugging', 'Profiling'],
+      color: 'text-yellow-400'
     }
   ]
 
   const process = [
     {
       step: '01',
-      title: 'Consulta Inicial',
-      description: 'Conversamos sobre tu proyecto, objetivos y necesidades específicas.',
-      icon: '💬'
+      title: 'Discovery',
+      description: 'Reunión inicial para entender los requerimientos técnicos, alcance y objetivos del negocio.',
+      icon: MessageSquare
     },
     {
       step: '02',
-      title: 'Propuesta & Cotización',
-      description: 'Elaboro una propuesta detallada con tiempos, costos y tecnologías.',
-      icon: '📋'
+      title: 'Blueprint',
+      description: 'Diseño de la arquitectura, selección del stack tecnológico y planificación de sprints.',
+      icon: FileText
     },
     {
       step: '03',
-      title: 'Desarrollo',
-      description: 'Trabajo en tu proyecto con actualizaciones constantes y comunicación fluida.',
-      icon: '⚙️'
+      title: 'Development',
+      description: 'Codificación iterativa con entregables constantes y revisión de código (Code Reviews).',
+      icon: Terminal
     },
     {
       step: '04',
-      title: 'Entrega & Soporte',
-      description: 'Entrego el proyecto completo con documentación y soporte post-entrega.',
-      icon: '✅'
+      title: 'Deployment',
+      description: 'Pruebas finales, configuración del servidor de producción y despliegue en vivo.',
+      icon: Rocket
     }
   ]
 
-  const whyChooseMe = [
-    {
-      title: 'Código Limpio',
-      description: 'Escribo código mantenible siguiendo las mejores prácticas',
-      icon: '🎯'
-    },
-    {
-      title: 'Comunicación Constante',
-      description: 'Mantente al tanto del progreso en todo momento',
-      icon: '💬'
-    },
-    {
-      title: 'Entregas Puntuales',
-      description: 'Respeto los plazos acordados y entrego a tiempo',
-      icon: '⏰'
-    },
-    {
-      title: 'Soporte Continuo',
-      description: 'Asistencia después de la entrega del proyecto',
-      icon: '🛠️'
-    }
+  const values = [
+    { title: 'Clean Code', desc: 'Código mantenible y escalable.', icon: ShieldCheck },
+    { title: 'Comunicación', desc: 'Reportes de avance semanales.', icon: Users },
+    { title: 'Puntualidad', desc: 'Respeto estricto a los deadlines.', icon: Clock },
+    { title: 'Soporte', desc: 'Garantía post-implementación.', icon: Zap }
   ]
 
   return (
-    <div className="min-h-screen bg-zinc-900 py-24 px-6 lg:px-24">
-      <div className="max-w-7xl mx-auto">
-        {/* Header */}
-        <div className="text-center mb-16">
-          <div className="inline-flex items-center gap-2 px-4 py-2 bg-emerald-400/10 border border-emerald-400/30 rounded-full mb-6">
-            <Zap className="w-4 h-4 text-emerald-400" />
-            <span className="text-emerald-400 font-medium text-xs uppercase tracking-widest">
-              Servicios Profesionales
+    <div className="min-h-screen bg-zinc-950 py-24 px-6 relative overflow-hidden">
+      {/* Background Pattern */}
+      <div className="absolute inset-0 z-0 opacity-[0.03]" style={{ backgroundImage: 'linear-gradient(#fff 1px, transparent 1px), linear-gradient(90deg, #fff 1px, transparent 1px)', backgroundSize: '40px 40px' }}></div>
+
+      <div className="max-w-7xl mx-auto relative z-10">
+        
+        {/* HEADER */}
+        <div className="text-center mb-20">
+          <motion.div 
+            initial={{ opacity: 0, y: 10 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            className="inline-flex items-center gap-2 px-4 py-2 bg-zinc-900 border border-zinc-800 rounded-full mb-6"
+          >
+            <Zap className="w-4 h-4 text-emerald-500" />
+            <span className="text-zinc-400 font-mono text-xs uppercase tracking-widest">
+              Catálogo de Servicios
             </span>
-          </div>
-          <h1 className="text-4xl md:text-6xl font-bold text-white mb-4">
-            ¿En qué puedo ayudarte?
-          </h1>
-          <p className="text-gray-400 max-w-2xl mx-auto">
-            Ofrezco servicios de desarrollo web enfocados en backend, bases de datos y arquitectura de sistemas
-          </p>
-          <div className="h-1 w-24 bg-linear-to-r from-emerald-400 to-transparent mx-auto mt-6" />
+          </motion.div>
+          <motion.h1 
+            initial={{ opacity: 0, y: 10 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.1 }}
+            className="text-4xl md:text-6xl font-black text-white mb-6"
+          >
+            Soluciones de <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-emerald-600">Alto Nivel</span>
+          </motion.h1>
+          <motion.p className="text-zinc-400 max-w-2xl mx-auto text-lg">
+            Transformo requerimientos complejos en software funcional, seguro y escalable.
+          </motion.p>
+          
         </div>
 
-        {/* Services Grid */}
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mb-20">
+        {/* SERVICES GRID */}
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mb-32">
           {services.map((service, index) => (
-            <div
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ delay: index * 0.1 }}
               key={index}
-              className="bg-linear-to-br from-zinc-800 to-zinc-900 p-6 rounded-xl border border-zinc-700 hover:border-emerald-400/50 transition-all group"
+              className="group relative bg-zinc-900/50 backdrop-blur-sm border border-zinc-800 p-8 rounded-2xl hover:border-emerald-500/30 transition-all duration-300 hover:-translate-y-1"
             >
-              {/* Icon */}
-              <div className="w-14 h-14 bg-emerald-400/10 rounded-xl flex items-center justify-center mb-4 group-hover:bg-emerald-400/20 transition-colors">
-                <service.icon className="w-7 h-7 text-emerald-400" />
+              <div className="absolute inset-0 bg-gradient-to-br from-emerald-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity rounded-2xl" />
+              
+              <div className="relative z-10">
+                <div className={`w-14 h-14 rounded-xl bg-zinc-950 border border-zinc-800 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300 ${service.color}`}>
+                  <service.icon size={28} />
+                </div>
+
+                <h3 className="text-xl font-bold text-white mb-3 group-hover:text-emerald-400 transition-colors">
+                  {service.title}
+                </h3>
+                
+                <p className="text-zinc-400 text-sm leading-relaxed mb-6 h-12 md:h-16">
+                  {service.description}
+                </p>
+
+                <ul className="space-y-3 mb-8">
+                  {service.features.map((feature, idx) => (
+                    <li key={idx} className="flex items-start gap-3 text-sm text-zinc-400">
+                      <CheckCircle2 className="w-4 h-4 text-emerald-500 shrink-0 mt-0.5" />
+                      <span>{feature}</span>
+                    </li>
+                  ))}
+                </ul>
+
+                <div className="pt-6 border-t border-zinc-800/50 flex flex-wrap gap-2">
+                  {service.technologies.map((tech, idx) => (
+                    <span key={idx} className="px-2 py-1 bg-zinc-950 text-zinc-500 text-[10px] font-mono uppercase tracking-wide rounded border border-zinc-800/50">
+                      {tech}
+                    </span>
+                  ))}
+                </div>
               </div>
-
-              {/* Title */}
-              <h3 className="text-2xl font-bold text-white mb-3 group-hover:text-emerald-400 transition-colors">
-                {service.title}
-              </h3>
-
-              {/* Description */}
-              <p className="text-gray-400 text-sm mb-4">
-                {service.description}
-              </p>
-
-              {/* Features */}
-              <ul className="space-y-2 mb-6">
-                {service.features.map((feature, idx) => (
-                  <li key={idx} className="flex items-start gap-2 text-gray-400 text-sm">
-                    <CheckCircle className="w-4 h-4 text-emerald-400 shrink-0 mt-0.5" />
-                    <span>{feature}</span>
-                  </li>
-                ))}
-              </ul>
-
-              {/* Technologies */}
-              <div className="flex flex-wrap gap-2 mb-4">
-                {service.technologies.map((tech, idx) => (
-                  <span
-                    key={idx}
-                    className="px-2 py-1 bg-zinc-900 text-gray-400 text-xs rounded border border-zinc-700"
-                  >
-                    {tech}
-                  </span>
-                ))}
-              </div>
-
-              {/* Price */}
-              <div className="pt-4 border-t border-zinc-700">
-                <p className="text-emerald-400 font-bold text-lg">{service.price}</p>
-              </div>
-            </div>
+            </motion.div>
           ))}
         </div>
 
-        {/* Process Section */}
-        <div className="mb-20">
-          <h2 className="text-3xl md:text-4xl font-bold text-white text-center mb-12">
-            Mi Proceso de Trabajo
-          </h2>
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+        {/* PROCESS SECTION */}
+        <div className="mb-32">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl font-bold text-white mb-4">Flujo de Desarrollo</h2>
+            <p className="text-zinc-400">Metodología estructurada para garantizar el éxito del proyecto</p>
+          </div>
+          
+          <div className="grid md:grid-cols-4 gap-8 relative">
+            {/* Connector Line (Desktop) */}
+            <div className="hidden md:block absolute top-12 left-0 w-full h-0.5 bg-gradient-to-r from-zinc-800 via-emerald-900/50 to-zinc-800 -z-10"></div>
+
             {process.map((item, index) => (
-              <div key={index} className="relative">
-                {/* Connector Line */}
-                {index < process.length - 1 && (
-                  <div className="hidden lg:block absolute top-12 left-full w-full h-0.5 bg-zinc-700 -z-10">
-                    <div className="absolute right-0 top-1/2 transform -translate-y-1/2">
-                      <ArrowRight className="w-5 h-5 text-zinc-600" />
-                    </div>
-                  </div>
-                )}
-                
-                <div className="bg-zinc-800 p-6 rounded-xl border border-zinc-700 hover:border-emerald-400/50 transition-all">
-                  <div className="flex items-center gap-4 mb-4">
-                    <span className="text-5xl">{item.icon}</span>
-                    <span className="text-5xl font-bold text-emerald-400/20">{item.step}</span>
-                  </div>
-                  <h3 className="text-xl font-bold text-white mb-2">{item.title}</h3>
-                  <p className="text-gray-400 text-sm">{item.description}</p>
+              <motion.div 
+                key={index}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ delay: index * 0.2 }}
+                className="relative bg-zinc-900 border border-zinc-800 p-6 rounded-2xl text-center hover:border-emerald-500/30 transition-colors"
+              >
+                <div className="w-24 h-24 mx-auto bg-zinc-950 border-4 border-zinc-900 rounded-full flex items-center justify-center mb-6 relative z-10 shadow-xl">
+                  <span className="absolute -top-2 -right-2 w-8 h-8 bg-emerald-500 rounded-full flex items-center justify-center text-zinc-900 font-bold text-xs shadow-lg shadow-emerald-500/20">
+                    {item.step}
+                  </span>
+                  <item.icon className="text-zinc-300 w-8 h-8" />
+                </div>
+                <h3 className="text-lg font-bold text-white mb-2">{item.title}</h3>
+                <p className="text-zinc-400 text-sm">{item.description}</p>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+
+        {/* VALUE PROPOSITION & CTA */}
+        <div className="grid lg:grid-cols-12 gap-8 items-stretch">
+          
+          {/* Values Grid */}
+          <div className="lg:col-span-7 grid sm:grid-cols-2 gap-4">
+            {values.map((val, i) => (
+              <div key={i} className="bg-zinc-900/50 border border-zinc-800 p-6 rounded-xl flex items-center gap-4">
+                <div className="p-3 bg-emerald-500/10 rounded-lg">
+                  <val.icon className="text-emerald-500 w-6 h-6" />
+                </div>
+                <div>
+                  <h4 className="text-white font-bold">{val.title}</h4>
+                  <p className="text-zinc-500 text-xs">{val.desc}</p>
                 </div>
               </div>
             ))}
           </div>
+
+          {/* CTA Card */}
+          <div className="lg:col-span-5 bg-gradient-to-br from-emerald-600 to-teal-800 rounded-2xl p-8 md:p-12 text-white flex flex-col justify-center items-start shadow-2xl shadow-emerald-900/20 relative overflow-hidden">
+            <div className="absolute top-0 right-0 p-32 bg-white/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2"></div>
+            
+            <h2 className="text-3xl font-bold mb-4 relative z-10">¿Listo para empezar?</h2>
+            <p className="text-emerald-100 mb-8 relative z-10">
+              Convierte esa idea en un sistema robusto. Agenda una consulta técnica gratuita de 15 minutos.
+            </p>
+            
+            <div className="flex flex-col sm:flex-row gap-4 w-full relative z-10">
+              <Link to="/contact" className="flex-1">
+                <button className="w-full px-6 py-3.5 bg-white text-emerald-900 font-bold rounded-xl hover:bg-emerald-50 transition-colors flex items-center justify-center gap-2">
+                  Contactar
+                  <ArrowRight className="w-4 h-4" />
+                </button>
+              </Link>
+              <a href="https://wa.me/51943759634" target="_blank" rel="noopener noreferrer" className="flex-1">
+                <button className="w-full px-6 py-3.5 bg-emerald-800/50 border border-emerald-400/30 text-white font-bold rounded-xl hover:bg-emerald-800 transition-colors flex items-center justify-center gap-2">
+                  WhatsApp
+                  <MessageSquare className="w-4 h-4" />
+                </button>
+              </a>
+            </div>
+          </div>
+
         </div>
 
-        {/* Why Choose Me */}
-        <div className="bg-linear-to-br from-zinc-800 to-zinc-900 p-8 rounded-2xl border border-zinc-700 mb-12">
-          <h2 className="text-3xl font-bold text-white text-center mb-8">
-            ¿Por qué trabajar conmigo?
-          </h2>
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {whyChooseMe.map((item, index) => (
-              <div key={index} className="text-center">
-                <div className="text-5xl mb-3">{item.icon}</div>
-                <h3 className="text-lg font-bold text-white mb-2">{item.title}</h3>
-                <p className="text-gray-400 text-sm">{item.description}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        {/* CTA Section */}
-        <div className="bg-linear-to-r from-emerald-400 to-emerald-500 rounded-2xl p-8 md:p-12 text-center">
-          <h2 className="text-3xl md:text-4xl font-bold text-zinc-900 mb-4">
-            ¿Listo para iniciar tu proyecto?
-          </h2>
-          <p className="text-zinc-800 text-lg mb-8 max-w-2xl mx-auto">
-            Conversemos sobre tu idea y cómo puedo ayudarte a hacerla realidad
-          </p>
-          <div className="flex flex-wrap gap-4 justify-center">
-            <a href="/contact">
-              <button className="px-8 py-4 bg-zinc-900 text-white font-bold rounded-lg hover:bg-zinc-800 transition flex items-center gap-2">
-                Contactar Ahora
-                <ArrowRight className="w-5 h-5" />
-              </button>
-            </a>
-            <a href="https://wa.me/51943759634" target="_blank" rel="noopener noreferrer">
-              <button className="px-8 py-4 bg-white text-zinc-900 font-bold rounded-lg hover:bg-gray-100 transition flex items-center gap-2">
-                WhatsApp
-                <span>💬</span>
-              </button>
-            </a>
-          </div>
-        </div>
       </div>
     </div>
   )
