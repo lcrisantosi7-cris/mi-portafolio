@@ -171,7 +171,7 @@ const Projects = () => {
               <button
                 key={filter.id}
                 onClick={() => setActiveFilter(filter.id)}
-                className={`relative px-6 py-2.5 rounded-xl text-sm font-medium transition-all duration-300 z-10 ${
+                className={`relative px-6 py-2.5 rounded-xl text-sm font-medium transition-colors transition-shadow duration-300 z-10 ${
                   activeFilter === filter.id ? 'text-zinc-950' : 'text-zinc-400 hover:text-white'
                 }`}
               >
@@ -189,19 +189,24 @@ const Projects = () => {
         </div>
 
         {/* PROJECTS GRID */}
-        <motion.div layout className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-          <AnimatePresence mode='popLayout'>
+        {/* Quitamos layout del contenedor padre, Framer Motion maneja mejor los hijos individualmente en Grids */}
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <AnimatePresence>
             {filteredProjects.map((project) => (
               <motion.div
-                layout
+                layout // Framer motion se encarga del reposicionamiento
                 key={project.title}
-                initial={{ opacity: 0, scale: 0.9 }}
+                initial={{ opacity: 0, scale: 0.8 }}
                 animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.9 }}
-                transition={{ duration: 0.3 }}
-                className="group relative bg-zinc-900 border border-zinc-800 rounded-2xl overflow-hidden hover:border-emerald-500/50 hover:shadow-2xl hover:shadow-emerald-500/10 transition-all duration-300 flex flex-col h-full"
+                exit={{ opacity: 0, scale: 0.8 }}
+                transition={{ 
+                  duration: 0.3, 
+                  layout: { type: "spring", bounce: 0.2, duration: 0.6 } // Le damos un efecto "resorte" fluido al reordenar
+                }}
+                // EL CAMBIO CLAVE AQUÍ: cambiamos transition-all por transition-colors y transition-shadow
+                className="group relative bg-zinc-900 border border-zinc-800 rounded-2xl overflow-hidden hover:border-emerald-500/50 hover:shadow-2xl hover:shadow-emerald-500/10 transition-colors transition-shadow duration-300 flex flex-col h-full"
               >
-                {/* Visual Header (No Images, just CSS Patterns) */}
+                {/* Visual Header */}
                 <div className={`h-32 w-full relative overflow-hidden flex items-center justify-center bg-gradient-to-br ${
                   project.category === 'backend' 
                     ? 'from-zinc-800 to-zinc-900' 
@@ -210,13 +215,13 @@ const Projects = () => {
                   {/* Pattern Overlay */}
                   <div className="absolute inset-0 opacity-20" style={{ backgroundImage: 'radial-gradient(#10b981 1px, transparent 1px)', backgroundSize: '16px 16px' }}></div>
                   
-                  {/* Floating Icon */}
-                  <div className="relative z-10 p-4 bg-zinc-950/50 backdrop-blur-md rounded-2xl border border-white/10 shadow-xl group-hover:scale-110 transition-transform duration-500">
+                  {/* Floating Icon - Cambiamos transition-transform por Framer Motion o limitamos el CSS */}
+                  <div className="relative z-10 p-4 bg-zinc-950/80 rounded-2xl border border-white/10 shadow-xl group-hover:scale-110 transition-transform duration-300">
                     <project.icon size={32} className={project.category === 'backend' ? 'text-blue-400' : 'text-emerald-400'} />
                   </div>
 
                   {/* Status Badge */}
-                  <div className={`absolute top-4 right-4 px-2 py-1 rounded text-[10px] font-bold uppercase tracking-wider border backdrop-blur-md ${
+                  <div className={`absolute top-4 right-4 px-2 py-1 rounded text-[10px] font-bold uppercase tracking-wider border ${
                     project.status === 'production' 
                       ? 'bg-emerald-500/20 text-emerald-400 border-emerald-500/30' 
                       : 'bg-yellow-500/10 text-yellow-400 border-yellow-500/20'
@@ -227,6 +232,7 @@ const Projects = () => {
 
                 {/* Content Body */}
                 <div className="p-6 flex-1 flex flex-col">
+                  {/* ... El resto de tu código interno se mantiene exactamente igual ... */}
                   <div className="flex justify-between items-start mb-3">
                     <h3 className="text-xl font-bold text-white leading-tight group-hover:text-emerald-400 transition-colors">
                       {project.title}
@@ -237,7 +243,6 @@ const Projects = () => {
                     {project.description}
                   </p>
 
-                  {/* Tech Stack Pills */}
                   <div className="flex flex-wrap gap-2 mb-6">
                     {project.tags.map((tag, idx) => (
                       <span key={idx} className="px-2.5 py-1 bg-zinc-950 border border-zinc-800 rounded-md text-xs text-zinc-400 font-mono hover:border-zinc-600 transition-colors cursor-default">
@@ -246,17 +251,16 @@ const Projects = () => {
                     ))}
                   </div>
 
-                  {/* Actions Footer */}
                   <div className="flex items-center gap-3 pt-4 border-t border-zinc-800/50">
                     {project.github && (
                       <a href={project.github} target="_blank" rel="noopener noreferrer" 
-                        className="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-lg bg-zinc-950 border border-zinc-800 text-zinc-300 text-sm font-medium hover:bg-zinc-800 hover:text-white transition-all group/btn">
+                        className="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-lg bg-zinc-950 border border-zinc-800 text-zinc-300 text-sm font-medium hover:bg-zinc-800 hover:text-white transition-colors group/btn">
                         <Github size={16} /> Code
                       </a>
                     )}
                     {project.demo && (
                       <a href={project.demo} target="_blank" rel="noopener noreferrer"
-                        className="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-lg bg-emerald-600/10 border border-emerald-600/20 text-emerald-400 text-sm font-medium hover:bg-emerald-600/20 transition-all">
+                        className="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-lg bg-emerald-600/10 border border-emerald-600/20 text-emerald-400 text-sm font-medium hover:bg-emerald-600/20 transition-colors">
                         <ExternalLink size={16} /> Demo
                       </a>
                     )}
@@ -265,7 +269,7 @@ const Projects = () => {
               </motion.div>
             ))}
           </AnimatePresence>
-        </motion.div>
+        </div>
 
         {/* Call to Action Footer */}
         <div className="mt-24 text-center">

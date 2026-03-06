@@ -120,7 +120,7 @@ const Experience = () => {
           ))}
         </motion.div>
 
-        {/* TIMELINE PRINCIPAL */}
+{/* TIMELINE PRINCIPAL */}
         <div className="relative">
           {/* Línea Central Vertical */}
           <div className="hidden md:block absolute left-1/2 transform -translate-x-1/2 w-[2px] h-full bg-zinc-800/50">
@@ -132,12 +132,14 @@ const Experience = () => {
               <motion.div 
                 key={index}
                 variants={itemVariants}
-                className={`relative flex flex-col md:flex-row items-center ${
+                className={`relative flex flex-col md:flex-row items-center w-full ${
                   index % 2 === 0 ? '' : 'md:flex-row-reverse'
                 }`}
               >
                 {/* 1. DATA LATERAL (Fecha/Label) */}
-                <div className={`w-full md:w-5/12 mb-4 md:mb-0 ${index % 2 === 0 ? 'md:text-right md:pr-12' : 'md:text-left md:pl-12 order-2 md:order-1'}`}>
+                <div className={`w-full md:w-1/2 mb-6 md:mb-0 flex flex-col ${
+                  index % 2 === 0 ? 'md:pr-16 md:items-end md:text-right' : 'md:pl-16 md:items-start md:text-left'
+                }`}>
                   <div className="inline-block">
                     <span className="text-emerald-500 font-mono text-sm font-bold mb-1 block">{item.year}</span>
                     <h3 className={`text-2xl font-bold text-white ${item.current ? 'text-emerald-400' : ''}`}>
@@ -152,15 +154,17 @@ const Experience = () => {
                   <div className={`w-12 h-12 rounded-full border-4 flex items-center justify-center bg-zinc-950 transition-all duration-300 ${
                     item.current 
                       ? 'border-emerald-500 shadow-[0_0_20px_rgba(16,185,129,0.4)] scale-110' 
-                      : 'border-zinc-800 group-hover:border-zinc-600'
+                      : 'border-zinc-800 hover:border-zinc-600'
                   }`}>
                     <item.icon size={20} className={item.current ? 'text-emerald-400' : 'text-zinc-600'} />
                   </div>
                 </div>
 
                 {/* 3. CARD DE CONTENIDO */}
-                <div className={`w-full md:w-5/12 ${index % 2 === 0 ? 'md:pl-12' : 'md:pr-12 order-1 md:order-2'}`}>
-                  <div className={`relative p-6 rounded-2xl border transition-all duration-300 hover:-translate-y-1 ${
+                <div className={`w-full md:w-1/2 flex ${
+                  index % 2 === 0 ? 'md:pl-16 justify-start' : 'md:pr-16 justify-end'
+                }`}>
+                  <div className={`relative w-full p-6 rounded-2xl border transition-all duration-300 hover:-translate-y-1 ${
                     item.current 
                       ? 'bg-zinc-900/80 border-emerald-500/50 shadow-lg shadow-emerald-500/5' 
                       : 'bg-zinc-900/30 border-zinc-800 hover:border-zinc-600 hover:bg-zinc-900'
