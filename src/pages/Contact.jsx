@@ -6,13 +6,9 @@ import {
 } from 'lucide-react'
 
 const Contact = () => {
-  const [formState, setFormState] = useState({
-    name: '',
-    email: '',
-    message: ''
-  })
-  
-  const [status, setStatus] = useState('idle') // idle, loading, success, error
+  const [formState, setFormState] = useState({ name: '', email: '', message: '' })
+  const [status, setStatus] = useState('idle')
+  const [errorMessage, setErrorMessage] = useState('')
   const [focusedField, setFocusedField] = useState(null)
   const [copied, setCopied] = useState(false)
 
@@ -20,24 +16,16 @@ const Contact = () => {
     {
       id: 'email',
       icon: Mail,
-      label: 'Email',
-      value: 'luiscrisantosi7@gmail.com',
-      action: 'copy', // Special action for email
-      link: 'mailto:luiscrisantosi7@gmail.com'
-    },
-    {
-      id: 'phone',
-      icon: Phone,
-      label: 'WhatsApp',
-      value: '+51 943 759 634',
-      action: 'link',
-      link: 'https://wa.me/51943759634'
+      label: 'Email Profesional',
+      value: ['luiscrisantosi7', '@', 'gmail.com'].join(''),
+      action: 'copy',
+      link: '#'
     },
     {
       id: 'location',
       icon: MapPin,
       label: 'Base de Operaciones',
-      value: 'Piura, Perú (Remote Available)',
+      value: 'Perú (Remote Available)',
       action: 'none',
       link: '#'
     }
@@ -54,19 +42,45 @@ const Contact = () => {
     setTimeout(() => setCopied(false), 2000)
   }
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault()
     setStatus('loading')
+    setErrorMessage('')
 
-    // Simulación de API call
-    setTimeout(() => {
+    try {
+      // Reemplaza esta URL con la de tu backend cuando lo despliegues
+      const response = await fetch('https://mi-portafolio-khaki-two.vercel.app/api/contact', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formState),
+      })
+
+      const data = await response.json()
+
+      if (!response.ok) {
+        throw new Error(data.error || 'Error al enviar el mensaje')
+      }
+
+      // Si todo sale bien
       setStatus('success')
       setFormState({ name: '', email: '', message: '' })
+      
+      // Resetear estado después de unos segundos
+      setTimeout(() => {
+        setStatus('idle')
+      }, 4000)
+
+    } catch (error) {
+      console.error('Error:', error)
+      setStatus('error')
+      setErrorMessage(error.message)
       
       setTimeout(() => {
         setStatus('idle')
       }, 4000)
-    }, 2000)
+    }
   }
 
   return (
@@ -262,27 +276,21 @@ const Contact = () => {
                   type="submit"
                   disabled={status === 'loading' || status === 'success'}
                   className={`w-full py-4 rounded-xl font-bold text-lg flex items-center justify-center gap-2 transition-all duration-300 ${
-                    status === 'success' 
-                      ? 'bg-emerald-500 text-zinc-950 cursor-default' 
-                      : 'bg-white text-zinc-950 hover:bg-zinc-200'
+                    status === 'success' ? 'bg-emerald-500 text-zinc-950 cursor-default' : 
+                    status === 'error' ? 'bg-red-500 text-white cursor-default' :
+                    'bg-white text-zinc-950 hover:bg-zinc-200'
                   }`}
                 >
-                  {status === 'loading' && (
-                    <Loader2 className="animate-spin" />
-                  )}
-                  {status === 'success' && (
-                    <>
-                      <CheckCircle2 className="w-5 h-5" />
-                      Mensaje Enviado
-                    </>
-                  )}
-                  {status === 'idle' && (
-                    <>
-                      Enviar Propuesta
-                      <Send className="w-4 h-4" />
-                    </>
-                  )}
+                  {status === 'loading' && <Loader2 className="animate-spin" />}
+                  {status === 'success' && <><CheckCircle2 className="w-5 h-5" /> Mensaje Enviado</>}
+                  {status === 'error' && 'Error al enviar'}
+                  {status === 'idle' && <><Send className="w-4 h-4" /> Enviar Propuesta</>}
                 </button>
+
+                {/* Mensaje de error visible si lo deseas */}
+                {status === 'error' && (
+                  <p className="text-red-400 text-sm text-center mt-4">{errorMessage}</p>
+                )}
               </form>
 
               {/* Success Message Overlay (Optional Visual Flair) */}
