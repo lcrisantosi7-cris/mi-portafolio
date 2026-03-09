@@ -5,7 +5,7 @@ const nodemailer = require("nodemailer");
 const rateLimit = require("express-rate-limit");
 const { tr } = require("framer-motion/client");
 
-conts a = express();
+const app = express();
 
 const contactLimiter = rateLimit({
   windowMs: 15* 60 * 1000, 
