@@ -49,7 +49,7 @@ const Contact = () => {
 
     try {
       // Reemplaza esta URL con la de tu backend cuando lo despliegues
-      const response = await fetch('https://mi-portafolio-zlwp.onrender.com/api/contact', {
+      const response = await fetch('https://mi-portafolio-9w8p.onrender.com/api/contact', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
