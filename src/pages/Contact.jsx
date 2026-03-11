@@ -1,9 +1,11 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { 
-  Mail, Phone, MapPin, Send, Linkedin, Github, 
-  CheckCircle2, Loader2, ArrowRight, Copy, Terminal 
+  Mail, MapPin, Send, Linkedin, Github, 
+  CheckCircle2, Loader2, ArrowRight, Copy, Terminal, Wifi 
 } from 'lucide-react'
+
+const BACKEND_URL = 'https://mi-portafolio-9w8p.onrender.com'
 
 const Contact = () => {
   const [formState, setFormState] = useState({ name: '', email: '', message: '' })
@@ -11,6 +13,22 @@ const Contact = () => {
   const [errorMessage, setErrorMessage] = useState('')
   const [focusedField, setFocusedField] = useState(null)
   const [copied, setCopied] = useState(false)
+  const [serverReady, setServerReady] = useState(false)
+  const [wakingUp, setWakingUp] = useState(false)
+
+  // ── Despertar el servidor al montar el componente ──────────────────────────
+  useEffect(() => {
+    const wakeServer = async () => {
+      try {
+        const res = await fetch(`${BACKEND_URL}/health`, { method: 'GET' })
+        if (res.ok) setServerReady(true)
+      } catch {
+        // Si falla silenciosamente, igual dejamos que el usuario intente
+        setServerReady(true)
+      }
+    }
+    wakeServer()
+  }, [])
 
   const contactInfo = [
     {
@@ -19,7 +37,6 @@ const Contact = () => {
       label: 'Email Profesional',
       value: ['luiscrisantosi7', '@', 'gmail.com'].join(''),
       action: 'copy',
-      link: '#'
     },
     {
       id: 'location',
@@ -27,13 +44,12 @@ const Contact = () => {
       label: 'Base de Operaciones',
       value: 'Perú (Remote Available)',
       action: 'none',
-      link: '#'
     }
   ]
 
   const socialLinks = [
     { name: 'LinkedIn', icon: Linkedin, url: 'https://www.linkedin.com/in/luis-crisanto-silupú' },
-    { name: 'GitHub', icon: Github, url: 'https://github.com/lcrisantosi7-cris/' }
+    { name: 'GitHub',   icon: Github,   url: 'https://github.com/lcrisantosi7-cris/' }
   ]
 
   const copyToClipboard = (text) => {
@@ -44,42 +60,45 @@ const Contact = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault()
-    setStatus('loading')
     setErrorMessage('')
 
+    // Si el servidor todavía no respondió al health check, mostramos "despertando"
+    if (!serverReady) {
+      setWakingUp(true)
+      // Esperamos hasta 20s a que despierte
+      let tries = 0
+      while (tries < 10) {
+        await new Promise(r => setTimeout(r, 2000))
+        try {
+          const res = await fetch(`${BACKEND_URL}/health`)
+          if (res.ok) { setServerReady(true); break }
+        } catch {}
+        tries++
+      }
+      setWakingUp(false)
+    }
+
+    setStatus('loading')
+
     try {
-      // Reemplaza esta URL con la de tu backend cuando lo despliegues
-      const response = await fetch('https://mi-portafolio-9w8p.onrender.com/api/contact', {
+      const response = await fetch(`${BACKEND_URL}/api/contact`, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(formState),
       })
 
       const data = await response.json()
+      if (!response.ok) throw new Error(data.error || 'Error al enviar el mensaje')
 
-      if (!response.ok) {
-        throw new Error(data.error || 'Error al enviar el mensaje')
-      }
-
-      // Si todo sale bien
       setStatus('success')
       setFormState({ name: '', email: '', message: '' })
-      
-      // Resetear estado después de unos segundos
-      setTimeout(() => {
-        setStatus('idle')
-      }, 4000)
+      setTimeout(() => setStatus('idle'), 4000)
 
     } catch (error) {
       console.error('Error:', error)
       setStatus('error')
       setErrorMessage(error.message)
-      
-      setTimeout(() => {
-        setStatus('idle')
-      }, 4000)
+      setTimeout(() => setStatus('idle'), 4000)
     }
   }
 
@@ -94,10 +113,9 @@ const Contact = () => {
       </div>
 
       <div className="max-w-6xl w-full mx-auto relative z-10">
-        
         <div className="grid lg:grid-cols-2 gap-12 lg:gap-24 items-start">
           
-          {/* LEFT COLUMN: Info & Context */}
+          {/* ── LEFT COLUMN ─────────────────────────────────────────────── */}
           <motion.div 
             initial={{ opacity: 0, x: -50 }}
             whileInView={{ opacity: 1, x: 0 }}
@@ -136,12 +154,10 @@ const Contact = () => {
                   <div className="w-12 h-12 bg-zinc-950 border border-zinc-800 rounded-xl flex items-center justify-center group-hover:scale-110 group-hover:border-emerald-500/50 transition-all">
                     <info.icon className="text-zinc-400 group-hover:text-emerald-500 transition-colors" size={20} />
                   </div>
-                  
                   <div className="flex-1">
                     <p className="text-xs text-zinc-500 uppercase tracking-wider font-bold mb-1">{info.label}</p>
                     <p className="text-white font-medium truncate">{info.value}</p>
                   </div>
-
                   {info.action === 'copy' && (
                     <button 
                       onClick={() => copyToClipboard(info.value)}
@@ -149,22 +165,11 @@ const Contact = () => {
                     >
                       {copied ? <CheckCircle2 size={18} className="text-emerald-500" /> : <Copy size={18} />}
                       {copied && (
-                        <span className="absolute -top-8 left-1/2 -translate-x-1/2 text-xs bg-emerald-500 text-zinc-950 font-bold px-2 py-1 rounded">
+                        <span className="absolute -top-8 left-1/2 -translate-x-1/2 text-xs bg-emerald-500 text-zinc-950 font-bold px-2 py-1 rounded whitespace-nowrap">
                           Copiado!
                         </span>
                       )}
                     </button>
-                  )}
-                  
-                  {info.action === 'link' && (
-                    <a 
-                      href={info.link} 
-                      target="_blank" 
-                      rel="noopener noreferrer"
-                      className="p-2 text-zinc-500 hover:text-white hover:bg-zinc-800 rounded-lg transition-colors"
-                    >
-                      <ArrowRight size={18} />
-                    </a>
                   )}
                 </div>
               ))}
@@ -186,36 +191,41 @@ const Contact = () => {
             </div>
           </motion.div>
 
-          {/* RIGHT COLUMN: The Form */}
+          {/* ── RIGHT COLUMN: Form ───────────────────────────────────────── */}
           <motion.div 
             initial={{ opacity: 0, x: 50 }}
             whileInView={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.6, delay: 0.2 }}
             className="relative"
           >
-            {/* Terminal/Window Decoration */}
             <div className="absolute -top-12 -right-12 w-24 h-24 bg-gradient-to-br from-emerald-500/20 to-transparent rounded-full blur-2xl"></div>
             
             <div className="bg-zinc-900/80 backdrop-blur-xl border border-zinc-800 p-8 md:p-10 rounded-3xl shadow-2xl relative overflow-hidden">
               
               {/* Form Header */}
-              <div className="flex items-center gap-3 mb-8 pb-8 border-b border-zinc-800">
-                <Terminal className="text-emerald-500" size={24} />
-                <h3 className="text-xl font-bold text-white">Enviar Mensaje</h3>
+              <div className="flex items-center justify-between mb-8 pb-8 border-b border-zinc-800">
+                <div className="flex items-center gap-3">
+                  <Terminal className="text-emerald-500" size={24} />
+                  <h3 className="text-xl font-bold text-white">Enviar Mensaje</h3>
+                </div>
+
+                {/* Indicador de estado del servidor */}
+                <div className="flex items-center gap-1.5">
+                  <Wifi size={14} className={serverReady ? 'text-emerald-500' : 'text-zinc-600'} />
+                  <span className={`text-xs font-mono ${serverReady ? 'text-emerald-500' : 'text-zinc-500'}`}>
+                    {serverReady ? 'servidor listo' : 'conectando...'}
+                  </span>
+                </div>
               </div>
 
               <form onSubmit={handleSubmit} className="space-y-6">
-                {/* Name Input */}
+                {/* Name */}
                 <div className="relative group">
-                  <label 
-                    className={`absolute left-4 transition-all duration-300 pointer-events-none ${
-                      focusedField === 'name' || formState.name 
-                        ? '-top-2.5 bg-zinc-900 px-2 text-xs text-emerald-500 font-bold' 
-                        : 'top-3.5 text-zinc-500'
-                    }`}
-                  >
-                    Tu Nombre
-                  </label>
+                  <label className={`absolute left-4 transition-all duration-300 pointer-events-none ${
+                    focusedField === 'name' || formState.name 
+                      ? '-top-2.5 bg-zinc-900 px-2 text-xs text-emerald-500 font-bold' 
+                      : 'top-3.5 text-zinc-500'
+                  }`}>Tu Nombre</label>
                   <input
                     type="text"
                     required
@@ -227,17 +237,13 @@ const Contact = () => {
                   />
                 </div>
 
-                {/* Email Input */}
+                {/* Email */}
                 <div className="relative group">
-                  <label 
-                    className={`absolute left-4 transition-all duration-300 pointer-events-none ${
-                      focusedField === 'email' || formState.email 
-                        ? '-top-2.5 bg-zinc-900 px-2 text-xs text-emerald-500 font-bold' 
-                        : 'top-3.5 text-zinc-500'
-                    }`}
-                  >
-                    Correo Electrónico
-                  </label>
+                  <label className={`absolute left-4 transition-all duration-300 pointer-events-none ${
+                    focusedField === 'email' || formState.email 
+                      ? '-top-2.5 bg-zinc-900 px-2 text-xs text-emerald-500 font-bold' 
+                      : 'top-3.5 text-zinc-500'
+                  }`}>Correo Electrónico</label>
                   <input
                     type="email"
                     required
@@ -249,17 +255,13 @@ const Contact = () => {
                   />
                 </div>
 
-                {/* Message Input */}
+                {/* Message */}
                 <div className="relative group">
-                  <label 
-                    className={`absolute left-4 transition-all duration-300 pointer-events-none ${
-                      focusedField === 'message' || formState.message 
-                        ? '-top-2.5 bg-zinc-900 px-2 text-xs text-emerald-500 font-bold' 
-                        : 'top-3.5 text-zinc-500'
-                    }`}
-                  >
-                    Detalles del Proyecto
-                  </label>
+                  <label className={`absolute left-4 transition-all duration-300 pointer-events-none ${
+                    focusedField === 'message' || formState.message 
+                      ? '-top-2.5 bg-zinc-900 px-2 text-xs text-emerald-500 font-bold' 
+                      : 'top-3.5 text-zinc-500'
+                  }`}>Detalles del Proyecto</label>
                   <textarea
                     rows="4"
                     required
@@ -274,26 +276,29 @@ const Contact = () => {
                 {/* Submit Button */}
                 <button
                   type="submit"
-                  disabled={status === 'loading' || status === 'success'}
+                  disabled={status === 'loading' || status === 'success' || wakingUp}
                   className={`w-full py-4 rounded-xl font-bold text-lg flex items-center justify-center gap-2 transition-all duration-300 ${
                     status === 'success' ? 'bg-emerald-500 text-zinc-950 cursor-default' : 
-                    status === 'error' ? 'bg-red-500 text-white cursor-default' :
+                    status === 'error'   ? 'bg-red-500 text-white cursor-default' :
+                    wakingUp            ? 'bg-zinc-700 text-zinc-400 cursor-wait' :
                     'bg-white text-zinc-950 hover:bg-zinc-200'
                   }`}
                 >
-                  {status === 'loading' && <Loader2 className="animate-spin" />}
-                  {status === 'success' && <><CheckCircle2 className="w-5 h-5" /> Mensaje Enviado</>}
-                  {status === 'error' && 'Error al enviar'}
-                  {status === 'idle' && <><Send className="w-4 h-4" /> Enviar Propuesta</>}
+                  {wakingUp && (
+                    <><Loader2 className="animate-spin w-4 h-4" /> Iniciando servidor...</>
+                  )}
+                  {!wakingUp && status === 'loading'  && <Loader2 className="animate-spin" />}
+                  {!wakingUp && status === 'success'  && <><CheckCircle2 className="w-5 h-5" /> Mensaje Enviado</>}
+                  {!wakingUp && status === 'error'    && 'Error al enviar'}
+                  {!wakingUp && status === 'idle'     && <><Send className="w-4 h-4" /> Enviar Propuesta</>}
                 </button>
 
-                {/* Mensaje de error visible si lo deseas */}
                 {status === 'error' && (
                   <p className="text-red-400 text-sm text-center mt-4">{errorMessage}</p>
                 )}
               </form>
 
-              {/* Success Message Overlay (Optional Visual Flair) */}
+              {/* Success Overlay */}
               <AnimatePresence>
                 {status === 'success' && (
                   <motion.div
@@ -316,7 +321,6 @@ const Contact = () => {
                   </motion.div>
                 )}
               </AnimatePresence>
-
             </div>
           </motion.div>
 
