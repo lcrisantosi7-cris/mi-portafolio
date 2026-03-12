@@ -17,11 +17,12 @@ const contactLimiter = rateLimit({
 
 // ─── Middlewares ─────────────────────────────────────────────────────────────
 app.use(cors({
-  origin: process.env.ALLOWED_ORIGIN || 'https://mi-portafolio-khaki-two.vercel.app',
-  methods: ['POST'],
+  origin: process.env.ALLOWED_ORIGIN || 'https://mi-portafolio-khaki-two.vercel.app/',
+  methods: ['GET', 'POST', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
 }));
 
-app.use(express.json({ limit: '10kb' })); // Límite de tamaño para evitar payloads enormes
+app.use(express.json({ limit: '100kb' })); // Límite de tamaño para evitar payloads enormes
 
 // ─── Nodemailer Transporter ───────────────────────────────────────────────────
 const transporter = nodemailer.createTransport({

@@ -20,15 +20,19 @@ const Contact = () => {
   useEffect(() => {
     const wakeServer = async () => {
       try {
-        const res = await fetch(`${BACKEND_URL}/health`, { method: 'GET' })
-        if (res.ok) setServerReady(true)
-      } catch {
-        // Si falla silenciosamente, igual dejamos que el usuario intente
-        setServerReady(true)
+        // Intentamos llamar a la raíz o al health
+        const res = await fetch(`${BACKEND_URL}/health`);
+        if (res.ok) setServerReady(true);
+      // eslint-disable-next-line no-unused-vars
+      } catch (err) {
+        console.log("Servidor despertando...");
       }
-    }
-    wakeServer()
-  }, [])
+    };
+    wakeServer();
+    // Re-intentar cada 10 segundos mientras el usuario navega por la sección
+    const interval = setInterval(wakeServer, 10000);
+    return () => clearInterval(interval);
+  }, []);
 
   const contactInfo = [
     {
@@ -59,48 +63,35 @@ const Contact = () => {
   }
 
   const handleSubmit = async (e) => {
-    e.preventDefault()
-    setErrorMessage('')
-
-    // Si el servidor todavía no respondió al health check, mostramos "despertando"
-    if (!serverReady) {
-      setWakingUp(true)
-      // Esperamos hasta 20s a que despierte
-      let tries = 0
-      while (tries < 10) {
-        await new Promise(r => setTimeout(r, 2000))
-        try {
-          const res = await fetch(`${BACKEND_URL}/health`)
-          if (res.ok) { setServerReady(true); break }
-        } catch {}
-        tries++
-      }
-      setWakingUp(false)
-    }
-
-    setStatus('loading')
+    e.preventDefault();
+    setStatus('loading'); // Activa el loader inmediatamente
+    setErrorMessage('');
 
     try {
       const response = await fetch(`${BACKEND_URL}/api/contact`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(formState),
-      })
+      });
 
-      const data = await response.json()
-      if (!response.ok) throw new Error(data.error || 'Error al enviar el mensaje')
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.error || 'Error al enviar');
 
-      setStatus('success')
-      setFormState({ name: '', email: '', message: '' })
-      setTimeout(() => setStatus('idle'), 4000)
+      setStatus('success');
+      setFormState({ name: '', email: '', message: '' });
+      setTimeout(() => setStatus('idle'), 4000);
 
     } catch (error) {
-      console.error('Error:', error)
-      setStatus('error')
-      setErrorMessage(error.message)
-      setTimeout(() => setStatus('idle'), 4000)
+      // Si el error es por timeout (servidor apagado), personaliza el mensaje
+      const msg = error.message === 'Failed to fetch' 
+        ? "El servidor está despertando, por favor intenta en 30 segundos."
+        : error.message;
+      
+      setErrorMessage(msg);
+      setStatus('error');
+      setTimeout(() => setStatus('idle'), 5000);
     }
-  }
+  };
 
   return (
     <div className="min-h-screen bg-zinc-950 py-24 px-6 relative overflow-hidden flex items-center justify-center">
