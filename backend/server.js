@@ -9,7 +9,7 @@ const app = express();
 // ─── Rate Limiter ────────────────────────────────────────────────────────────
 const contactLimiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutos
-  max: 3,
+  max: 30,
   message: { error: "Demasiadas solicitudes, por favor intenta de nuevo más tarde." },
   standardHeaders: true,  // FIX: era "standarHeaders" (typo)
   legacyHeaders: false,
@@ -26,7 +26,9 @@ app.use(express.json({ limit: '100kb' })); // Límite de tamaño para evitar pay
 
 // ─── Nodemailer Transporter ───────────────────────────────────────────────────
 const transporter = nodemailer.createTransport({
-  service: 'gmail',
+  host: 'smtp.gmail.com',
+  port: 465,
+  secure: true, // Usa SSL
   auth: {
     user: process.env.EMAIL_USER,
     pass: process.env.EMAIL_PASS, // Usa una App Password de Google, no tu contraseña real
