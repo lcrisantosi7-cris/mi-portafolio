@@ -1,10 +1,13 @@
 require("dotenv").config();
 const express = require("express");
-const cors = require("cors");
 const nodemailer = require("nodemailer");
+const cors = require("cors");
 const rateLimit = require("express-rate-limit");
 
 const app = express();
+
+app.set('trust proxy', 1);
+app.use(express.json());
 
 // ─── Rate Limiter ────────────────────────────────────────────────────────────
 const contactLimiter = rateLimit({
@@ -29,10 +32,17 @@ const transporter = nodemailer.createTransport({
   host: 'smtp.gmail.com',
   port: 465,
   secure: true, // Usa SSL
+  connectionTimeout: 10000, 
+  greetingTimeout: 10000,
+  socketTimeout: 10000,
   auth: {
     user: process.env.EMAIL_USER,
     pass: process.env.EMAIL_PASS, // Usa una App Password de Google, no tu contraseña real
   },
+  tls: {
+    // Esto ayuda a evitar problemas de resolución de nombres en redes cloud
+    rejectUnauthorized: false 
+  }
 });
 
 // Verificar conexión al iniciar
