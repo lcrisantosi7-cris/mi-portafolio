@@ -30,8 +30,8 @@ app.use(express.json({ limit: '100kb' })); // Límite de tamaño para evitar pay
 // ─── Nodemailer Transporter ───────────────────────────────────────────────────
 const transporter = nodemailer.createTransport({
   host: 'smtp.gmail.com',
-  port: 465,
-  secure: true, // Usa SSL
+  port: 587,
+  secure: false, // Usa SSL
   connectionTimeout: 10000, 
   greetingTimeout: 10000,
   socketTimeout: 10000,
@@ -43,6 +43,7 @@ const transporter = nodemailer.createTransport({
     // Esto ayuda a evitar problemas de resolución de nombres en redes cloud
     rejectUnauthorized: false 
   }
+  
 });
 
 // Verificar conexión al iniciar
