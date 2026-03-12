@@ -5,7 +5,7 @@ import {
   CheckCircle2, Loader2, ArrowRight, Copy, Terminal, Wifi 
 } from 'lucide-react'
 
-const BACKEND_URL = 'https://mi-portafolio-9w8p.onrender.com'
+const BACKEND_URL = 'https://mi-portafolio-b0w5.onrender.com'
 
 const Contact = () => {
   const [formState, setFormState] = useState({ name: '', email: '', message: '' })
