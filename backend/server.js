@@ -29,13 +29,10 @@ app.use(express.json({ limit: '100kb' })); // Límite de tamaño para evitar pay
 
 // ─── Nodemailer Transporter ───────────────────────────────────────────────────
 const transporter = nodemailer.createTransport({
-  host: 'smtp.gmail.com',
+  host: "smtp.gmail.com",
   port: 587,
-  secure: false, // STARTTLS (puerto 587)
-  family: 4, // Forzar IPv4 para evitar problemas en redes cloud
-  connectionTimeout: 10000,
-  greetingTimeout: 10000,
-  socketTimeout: 10000,
+  secure: false,
+  family: 4,
   auth: {
     user: process.env.EMAIL_USER,
     pass: process.env.EMAIL_PASS, // Usa una App Password de Google, no tu contraseña real
