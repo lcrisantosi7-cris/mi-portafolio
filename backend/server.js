@@ -7,7 +7,6 @@ const rateLimit = require("express-rate-limit");
 const app = express();
 
 app.set('trust proxy', 1);
-app.use(express.json());
 
 // ─── Rate Limiter ────────────────────────────────────────────────────────────
 const contactLimiter = rateLimit({
@@ -20,7 +19,7 @@ const contactLimiter = rateLimit({
 
 // ─── Middlewares ─────────────────────────────────────────────────────────────
 app.use(cors({
-  origin: process.env.ALLOWED_ORIGIN || 'https://mi-portafolio-khaki-two.vercel.app/',
+  origin: process.env.ALLOWED_ORIGIN || 'https://mi-portafolio-khaki-two.vercel.app',
   methods: ['GET', 'POST', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization'],
 }));
@@ -31,8 +30,9 @@ app.use(express.json({ limit: '100kb' })); // Límite de tamaño para evitar pay
 const transporter = nodemailer.createTransport({
   host: 'smtp.gmail.com',
   port: 587,
-  secure: false, // Usa SSL
-  connectionTimeout: 10000, 
+  secure: false, // STARTTLS (puerto 587)
+  family: 4, // Forzar IPv4 para evitar problemas en redes cloud
+  connectionTimeout: 10000,
   greetingTimeout: 10000,
   socketTimeout: 10000,
   auth: {
@@ -41,9 +41,9 @@ const transporter = nodemailer.createTransport({
   },
   tls: {
     // Esto ayuda a evitar problemas de resolución de nombres en redes cloud
-    rejectUnauthorized: false 
+    rejectUnauthorized: false
   }
-  
+
 });
 
 // Verificar conexión al iniciar
@@ -73,8 +73,8 @@ app.post("/api/contact", contactLimiter, async (req, res) => {
     return res.status(400).json({ error: "Todos los campos son obligatorios." });
   }
 
-  const cleanName    = sanitize(name);
-  const cleanEmail   = sanitize(email);
+  const cleanName = sanitize(name);
+  const cleanEmail = sanitize(email);
   const cleanMessage = sanitize(message);
 
   if (cleanName.length < 2 || cleanName.length > 100) {
