@@ -8,6 +8,7 @@ const app = express();
 
 app.set('trust proxy', 1);
 
+
 // ─── Rate Limiter ────────────────────────────────────────────────────────────
 const contactLimiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutos
