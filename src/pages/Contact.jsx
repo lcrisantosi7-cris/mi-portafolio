@@ -5,7 +5,7 @@ import {
   CheckCircle2, Loader2, ArrowRight, Copy, Terminal, Wifi 
 } from 'lucide-react'
 
-const BACKEND_URL = 'https://mi-portafolio-b0w5.onrender.com'
+const BACKEND_URL = 'https://portfolio-backend-htox.onrender.com'
 
 const Contact = () => {
   const [formState, setFormState] = useState({ name: '', email: '', message: '' })
@@ -38,9 +38,10 @@ const Contact = () => {
     {
       id: 'email',
       icon: Mail,
-      label: 'Email Profesional',
-      value: ['luiscrisantosi7', '@', 'gmail.com'].join(''),
-      action: 'copy',
+      label: 'Canal de Comunicación',
+      value: 'Respuesta en menos de 24h',
+      subValue: 'Usa el formulario para prioridad',
+      action: 'none', 
     },
     {
       id: 'location',
@@ -147,19 +148,16 @@ const Contact = () => {
                   </div>
                   <div className="flex-1">
                     <p className="text-xs text-zinc-500 uppercase tracking-wider font-bold mb-1">{info.label}</p>
-                    <p className="text-white font-medium truncate">{info.value}</p>
+                    <p className="text-white font-medium">{info.value}</p>
+                    {info.subValue && <p className="text-[10px] text-emerald-500/70 font-mono mt-0.5">{info.subValue}</p>}
                   </div>
+              
                   {info.action === 'copy' && (
                     <button 
                       onClick={() => copyToClipboard(info.value)}
                       className="p-2 text-zinc-500 hover:text-white hover:bg-zinc-800 rounded-lg transition-colors relative"
                     >
                       {copied ? <CheckCircle2 size={18} className="text-emerald-500" /> : <Copy size={18} />}
-                      {copied && (
-                        <span className="absolute -top-8 left-1/2 -translate-x-1/2 text-xs bg-emerald-500 text-zinc-950 font-bold px-2 py-1 rounded whitespace-nowrap">
-                          Copiado!
-                        </span>
-                      )}
                     </button>
                   )}
                 </div>
