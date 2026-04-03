@@ -1,16 +1,43 @@
-# React + Vite
+# 🚀 Personal Portfolio - Full Stack Developer
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+¡Bienvenido a mi portafolio profesional! Este proyecto es una plataforma interactiva diseñada para mostrar mi trayectoria como desarrollador Full Stack y estudiante de Ingeniería de Sistemas. Enfocado en **arquitectura sólida**, **rendimiento** y **experiencia de usuario**.
 
-Currently, two official plugins are available:
+---
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## 🛠️ Tecnologías Utilizadas
 
-## React Compiler
+### **Frontend**
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+- **React.js** (Vite) - Interfaz reactiva y moderna.
+- **Framer Motion** - Animaciones fluidas y micro-interacciones.
+- **Tailwind CSS** - Estilizado utilitario con temática _dark mode_.
+- **Lucide React** - Set de iconos vectoriales.
 
-## Expanding the ESLint configuration
+### **Backend**
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+- **Node.js & Express** - Servidor robusto y escalable.
+- **Nodemailer / Resend API** - Gestión profesional de mensajería.
+- **Express Rate Limit** - Seguridad contra ataques de fuerza bruta (DoS).
+- **CORS & Dotenv** - Configuración de seguridad y variables de entorno.
+
+---
+
+## 🏗️ Arquitectura del Proyecto
+
+El proyecto sigue una arquitectura desacoplada para mayor escalabilidad:
+
+- **Frontend:** Desplegado en **Vercel** para carga ultrarrápida a través de su CDN.
+- **Backend:** Alojado en **Render**, manejando la lógica de contacto y seguridad del servidor.
+- **Seguridad:** Implementación de sanitización de entradas, límites de peticiones por IP y manejo de errores centralizado.
+
+---
+
+## 🚀 Instalación y Configuración
+
+Si deseas ejecutar este proyecto localmente, sigue estos pasos:
+
+### 1. Clonar el repositorio
+
+```bash
+git clone [https://github.com/lcrisantosi7-cris/mi-portafolio.git](https://github.com/lcrisantosi7-cris/mi-portafolio.git)
+```
