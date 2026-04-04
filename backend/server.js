@@ -1,5 +1,5 @@
 const dns = require('dns');
-dns.setDefaultResultOrder('ipv4first'); // CRÍTICO para Node 18+ con Gmail
+dns.setDefaultResultOrder('ipv4first'); 
 
 require('dotenv').config();
 const express = require('express');
@@ -10,20 +10,20 @@ const rateLimit = require('express-rate-limit');
 const app = express();
 app.set('trust proxy', 1);
 
-// ─── Validación de variables de entorno al arrancar ───────────────────────────
+// Validación de variables de entorno al arrancar 
 const REQUIRED_ENV = ['EMAIL_USER', 'EMAIL_PASS', 'ALLOWED_ORIGIN'];
 const missingEnv = REQUIRED_ENV.filter((key) => !process.env[key]);
 if (missingEnv.length > 0) {
-  console.error(`❌ Variables de entorno faltantes: ${missingEnv.join(', ')}`);
+  console.error(`(X) Variables de entorno faltantes: ${missingEnv.join(', ')}`);
   process.exit(1);
 }
 
-const EMAIL_USER    = process.env.EMAIL_USER;
-const EMAIL_PASS    = process.env.EMAIL_PASS;
+const EMAIL_USER = process.env.EMAIL_USER;
+const EMAIL_PASS = process.env.EMAIL_PASS;
 const ALLOWED_ORIGIN = process.env.ALLOWED_ORIGIN;
-const PORT          = process.env.PORT || 3000;
+const PORT = process.env.PORT || 3000;
 
-// ─── Rate Limiter ─────────────────────────────────────────────────────────────
+// Rate Limiter para la ruta de contacto 
 const contactLimiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutos
   max: 10,
@@ -31,12 +31,12 @@ const contactLimiter = rateLimit({
   standardHeaders: true,
   legacyHeaders: false,
   handler: (req, res, next, options) => {
-    console.warn(`⚠️  Rate limit alcanzado desde IP: ${req.ip}`);
+    console.warn(`(!) Rate limit alcanzado desde IP: ${req.ip}`);
     res.status(429).json(options.message);
   },
 });
 
-// ─── Middlewares ──────────────────────────────────────────────────────────────
+// Middlewares 
 app.use(cors({
   origin: ALLOWED_ORIGIN,
   methods: ['GET', 'POST', 'OPTIONS'],
@@ -44,30 +44,32 @@ app.use(cors({
 }));
 app.use(express.json({ limit: '20kb' }));
 
-// ─── Nodemailer Transporter ───────────────────────────────────────────────────
+// Nodemailer Transporter 
 const transporter = nodemailer.createTransport({
   service: 'gmail',
   auth: {
-    user: EMAIL_USER,
-    pass: EMAIL_PASS,
+    user: process.env.EMAIL_USER, 
+    pass: process.env.EMAIL_PASS, 
   },
-  pool: true,
-  maxConnections: 2,
-  connectionTimeout: 25000,
-  greetingTimeout: 25000,
-  socketTimeout: 30000,
+  pool: true, // Mantiene la conexión abierta para mayor velocidad
+  maxConnections: 1, 
+  tls: {
+    rejectUnauthorized: false // Evita errores de certificados en servidores cloud
+  },
+  connectionTimeout: 20000, 
+  greetingTimeout: 20000,
 });
 
 // Verificar conexión al iniciar
 transporter.verify((error) => {
   if (error) {
-    console.error('❌ Error al conectar con Gmail SMTP:', error.message);
+    console.error('(X) Error al conectar con Gmail SMTP:', error.message);
   } else {
-    console.log(`✅ Nodemailer conectado correctamente como ${EMAIL_USER}`);
+    console.log(`(1) Nodemailer conectado correctamente como ${EMAIL_USER}`);
   }
 });
 
-// ─── Helpers ──────────────────────────────────────────────────────────────────
+// Helpers de validación y sanitización 
 const sanitize = (str) =>
   String(str)
     .replace(/<[^>]*>/g, '')   // elimina tags HTML
@@ -78,7 +80,7 @@ const sanitize = (str) =>
 const isValidEmail = (email) =>
   /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(String(email).trim());
 
-// ─── Templates de Email ───────────────────────────────────────────────────────
+// Templates de Email 
 const buildNotificationHtml = (name, email, message) => `
 <!DOCTYPE html>
 <html lang="es">
@@ -95,7 +97,7 @@ const buildNotificationHtml = (name, email, message) => `
               <tr>
                 <td>
                   <p style="margin:0;color:rgba(255,255,255,0.7);font-size:11px;font-family:monospace;letter-spacing:2px;text-transform:uppercase;">Portfolio Contact System</p>
-                  <h1 style="margin:8px 0 0;color:#ffffff;font-size:24px;font-weight:700;">📩 Nuevo Mensaje Recibido</h1>
+                  <h1 style="margin:8px 0 0;color:#ffffff;font-size:24px;font-weight:700;"> <!> Nuevo Mensaje Recibido</h1>
                 </td>
                 <td align="right">
                   <div style="background:rgba(255,255,255,0.15);border-radius:50%;width:52px;height:52px;display:inline-flex;align-items:center;justify-content:center;font-size:24px;line-height:52px;text-align:center;">✉️</div>
@@ -173,7 +175,7 @@ const buildConfirmationHtml = (name) => `
         <!-- Header -->
         <tr>
           <td style="background:linear-gradient(135deg,#10b981,#059669);padding:40px 36px;text-align:center;">
-            <div style="width:64px;height:64px;background:rgba(255,255,255,0.2);border-radius:50%;margin:0 auto 16px;font-size:32px;line-height:64px;text-align:center;">✅</div>
+            <div style="width:64px;height:64px;background:rgba(255,255,255,0.2);border-radius:50%;margin:0 auto 16px;font-size:32px;line-height:64px;text-align:center;">(1)</div>
             <h1 style="margin:0;color:#ffffff;font-size:26px;font-weight:700;">¡Mensaje recibido!</h1>
             <p style="margin:8px 0 0;color:rgba(255,255,255,0.85);font-size:15px;">Gracias por escribirme, ${name}</p>
           </td>
@@ -240,7 +242,7 @@ const buildConfirmationHtml = (name) => `
 </html>
 `;
 
-// ─── Ruta de Contacto ─────────────────────────────────────────────────────────
+// Ruta de Contacto 
 app.post('/api/contact', contactLimiter, async (req, res) => {
   const { name, email, message } = req.body ?? {};
 
@@ -265,44 +267,44 @@ app.post('/api/contact', contactLimiter, async (req, res) => {
 
   console.log(`📨 Nuevo contacto de: ${cleanName} <${cleanEmail}>`);
 
-  // ── 1. Email de notificación (para ti) ──────────────────────────────────────
+  //1. Email de notificación (para ti) 
   try {
     await transporter.sendMail({
       from: `"Portfolio Contact" <${EMAIL_USER}>`,
       to: EMAIL_USER,
       replyTo: cleanEmail,
-      subject: `📩 Nuevo mensaje de ${cleanName}`,
+      subject: `<!> Nuevo mensaje de ${cleanName}`,
       html: buildNotificationHtml(cleanName, cleanEmail, cleanMessage),
     });
-    console.log(`✅ Notificación enviada a ${EMAIL_USER}`);
+    console.log(`(1) Notificación enviada a ${EMAIL_USER}`);
   } catch (err) {
     // Si falla la notificación, devolvemos error (es el email principal)
-    console.error('❌ Error enviando notificación:', err.message);
+    console.error('(X) Error enviando notificación:', err.message);
     return res.status(500).json({
       error: 'No se pudo enviar tu mensaje. Por favor intenta de nuevo en unos minutos.',
     });
   }
 
-  // ── 2. Email de confirmación (para el cliente) ───────────────────────────
+  // 2. Email de confirmación (para el cliente) 
   // No bloqueamos la respuesta si este falla — la notificación ya llegó
   try {
     await transporter.sendMail({
       from: `"Luis Crisanto" <${EMAIL_USER}>`,
       to: cleanEmail,
-      subject: `¡Gracias por contactarme, ${cleanName}! ✅`,
+      subject: `¡Gracias por contactarme, ${cleanName}! (1)`,
       html: buildConfirmationHtml(cleanName),
     });
-    console.log(`✅ Confirmación enviada a ${cleanEmail}`);
+    console.log(`(1) Confirmación enviada a ${cleanEmail}`);
   } catch (err) {
     // Loggeamos el error pero respondemos éxito igualmente
-    console.error(`⚠️  No se pudo enviar confirmación a ${cleanEmail}:`, err.message);
+    console.error(`(!)  No se pudo enviar confirmación a ${cleanEmail}:`, err.message);
     console.error('   → Posible causa: dominio corporativo/universitario bloquea emails externos.');
   }
 
   return res.status(200).json({ message: 'Mensaje enviado exitosamente.' });
 });
 
-// ─── Health Check ─────────────────────────────────────────────────────────────
+// Health Check 
 app.get('/health', (_, res) => {
   res.status(200).json({
     status: 'ok',
@@ -311,7 +313,7 @@ app.get('/health', (_, res) => {
   });
 });
 
-// ─── 404 catch-all ────────────────────────────────────────────────────────────
+// 404 catch-all 
 app.use((_, res) => {
   res.status(404).json({ error: 'Ruta no encontrada.' });
 });
@@ -324,7 +326,7 @@ app.use((err, req, res, next) => {
 
 // ─── Start ────────────────────────────────────────────────────────────────────
 app.listen(PORT, () => {
-  console.log(`🚀 Servidor listo en puerto ${PORT}`);
-  console.log(`📧 Usando cuenta: ${EMAIL_USER}`);
-  console.log(`🌐 CORS permitido para: ${ALLOWED_ORIGIN}`);
+  console.log(`Servidor listo en puerto ${PORT}`);
+  console.log(`Usando cuenta: ${EMAIL_USER}`);
+  console.log(`CORS permitido para: ${ALLOWED_ORIGIN}`);
 });
