@@ -4,23 +4,24 @@ dns.setDefaultResultOrder('ipv4first');
 require('dotenv').config();
 const express = require('express');
 const nodemailer = require('nodemailer');
+const { Resend } = require('resend');
 const cors = require('cors');
 const rateLimit = require('express-rate-limit');
 
 const app = express();
 app.set('trust proxy', 1);
 
-// Validación de variables de entorno al arrancar 
-const REQUIRED_ENV = ['EMAIL_USER', 'EMAIL_PASS', 'ALLOWED_ORIGIN'];
-const missingEnv = REQUIRED_ENV.filter((key) => !process.env[key]);
-if (missingEnv.length > 0) {
-  console.error(`(X) Variables de entorno faltantes: ${missingEnv.join(', ')}`);
+// Validación de variables de entorno al arrancar
+const hasGmailCreds = process.env.EMAIL_USER && process.env.EMAIL_PASS;
+const RESEND_API_KEY = process.env.RESEND_API_KEY;
+const ALLOWED_ORIGIN = process.env.ALLOWED_ORIGIN;
+if (!ALLOWED_ORIGIN || (!hasGmailCreds && !RESEND_API_KEY)) {
+  console.error('(X) Falta ALLOWED_ORIGIN y/o credenciales de email. Configure ALLOWED_ORIGIN y (EMAIL_USER+EMAIL_PASS) o RESEND_API_KEY.');
   process.exit(1);
 }
 
 const EMAIL_USER = process.env.EMAIL_USER;
 const EMAIL_PASS = process.env.EMAIL_PASS;
-const ALLOWED_ORIGIN = process.env.ALLOWED_ORIGIN;
 const PORT = process.env.PORT || 3000;
 
 // Rate Limiter para la ruta de contacto 
@@ -36,38 +37,60 @@ const contactLimiter = rateLimit({
   },
 });
 
-// Middlewares 
+// Middlewares
+const allowedOrigins = (ALLOWED_ORIGIN || '').split(',').map(s => s.trim()).filter(Boolean);
+if (process.env.NODE_ENV !== 'production') {
+  // during local development accept typical Vite localhost origins
+  allowedOrigins.push('http://localhost:5173', 'http://127.0.0.1:5173');
+}
+
 app.use(cors({
-  origin: ALLOWED_ORIGIN,
+  origin: (origin, callback) => {
+    // allow non-browser tools like curl/postman (no origin)
+    if (!origin) return callback(null, true);
+    if (allowedOrigins.includes(origin)) return callback(null, true);
+    return callback(new Error('CORS origin denied'), false);
+  },
   methods: ['GET', 'POST', 'OPTIONS'],
   allowedHeaders: ['Content-Type'],
 }));
+
+// Enable preflight for all routes
+app.options(/.*/, cors());
 app.use(express.json({ limit: '20kb' }));
 
-// Nodemailer Transporter 
-const transporter = nodemailer.createTransport({
-  service: 'gmail',
-  auth: {
-    user: process.env.EMAIL_USER, 
-    pass: process.env.EMAIL_PASS, 
-  },
-  pool: true, // Mantiene la conexión abierta para mayor velocidad
-  maxConnections: 1, 
-  tls: {
-    rejectUnauthorized: false // Evita errores de certificados en servidores cloud
-  },
-  connectionTimeout: 20000, 
-  greetingTimeout: 20000,
-});
+// Configuración de transporte
+let transporter = null;
+let resendClient = null;
 
-// Verificar conexión al iniciar
-transporter.verify((error) => {
-  if (error) {
-    console.error('(X) Error al conectar con Gmail SMTP:', error.message);
-  } else {
-    console.log(`(1) Nodemailer conectado correctamente como ${EMAIL_USER}`);
-  }
-});
+const useResend = Boolean(process.env.RESEND_API_KEY);
+if (useResend) {
+  resendClient = new Resend(process.env.RESEND_API_KEY);
+  console.log('(1) Usando Resend para envío de emails.');
+} else if (process.env.EMAIL_USER && process.env.EMAIL_PASS) {
+  transporter = nodemailer.createTransport({
+    service: 'gmail',
+    auth: {
+      user: process.env.EMAIL_USER,
+      pass: process.env.EMAIL_PASS,
+    },
+    pool: true,
+    maxConnections: 1,
+    tls: { rejectUnauthorized: false },
+    connectionTimeout: 20000,
+    greetingTimeout: 20000,
+  });
+
+  transporter.verify((error) => {
+    if (error) {
+      console.error('(X) Error al conectar con Gmail SMTP:', error.message);
+    } else {
+      console.log(`(1) Nodemailer conectado correctamente como ${process.env.EMAIL_USER}`);
+    }
+  });
+} else {
+  console.warn('(!) No se configuró método de envío de emails (ni Resend ni Gmail).');
+}
 
 // Helpers de validación y sanitización 
 const sanitize = (str) =>
@@ -269,34 +292,57 @@ app.post('/api/contact', contactLimiter, async (req, res) => {
 
   //1. Email de notificación (para ti) 
   try {
-    await transporter.sendMail({
-      from: `"Portfolio Contact" <${EMAIL_USER}>`,
-      to: EMAIL_USER,
-      replyTo: cleanEmail,
-      subject: `<!> Nuevo mensaje de ${cleanName}`,
-      html: buildNotificationHtml(cleanName, cleanEmail, cleanMessage),
-    });
-    console.log(`(1) Notificación enviada a ${EMAIL_USER}`);
+    if (resendClient) {
+      // Usar Resend para notificación interna
+      await resendClient.emails.send({
+        from: process.env.RESEND_FROM || process.env.EMAIL_USER,
+        to: [process.env.RESEND_TO || process.env.EMAIL_USER],
+        subject: `<!> Nuevo mensaje de ${cleanName}`,
+        html: buildNotificationHtml(cleanName, cleanEmail, cleanMessage),
+      });
+      console.log(`(1) Notificación enviada vía Resend a ${process.env.RESEND_TO || process.env.EMAIL_USER}`);
+    } else if (transporter) {
+      await transporter.sendMail({
+        from: `"Portfolio Contact" <${process.env.EMAIL_USER}>`,
+        to: process.env.EMAIL_USER,
+        replyTo: cleanEmail,
+        subject: `<!> Nuevo mensaje de ${cleanName}`,
+        html: buildNotificationHtml(cleanName, cleanEmail, cleanMessage),
+      });
+      console.log(`(1) Notificación enviada a ${process.env.EMAIL_USER}`);
+    } else {
+      console.error('(X) No hay método de envío configurado para notificación interna.');
+      return res.status(500).json({ error: 'Sistema de mensajería no configurado.' });
+    }
   } catch (err) {
-    // Si falla la notificación, devolvemos error (es el email principal)
     console.error('(X) Error enviando notificación:', err.message);
     return res.status(500).json({
       error: 'No se pudo enviar tu mensaje. Por favor intenta de nuevo en unos minutos.',
     });
   }
 
-  // 2. Email de confirmación (para el cliente) 
-  // No bloqueamos la respuesta si este falla — la notificación ya llegó
+  // 2. Email de confirmación (para el cliente) — no bloqueante
   try {
-    await transporter.sendMail({
-      from: `"Luis Crisanto" <${EMAIL_USER}>`,
-      to: cleanEmail,
-      subject: `¡Gracias por contactarme, ${cleanName}! (1)`,
-      html: buildConfirmationHtml(cleanName),
-    });
-    console.log(`(1) Confirmación enviada a ${cleanEmail}`);
+    if (resendClient) {
+      await resendClient.emails.send({
+        from: process.env.RESEND_FROM || process.env.EMAIL_USER,
+        to: [cleanEmail],
+        subject: `¡Gracias por contactarme, ${cleanName}! (1)`,
+        html: buildConfirmationHtml(cleanName),
+      });
+      console.log(`(1) Confirmación enviada vía Resend a ${cleanEmail}`);
+    } else if (transporter) {
+      await transporter.sendMail({
+        from: `"Luis Crisanto" <${process.env.EMAIL_USER}>`,
+        to: cleanEmail,
+        subject: `¡Gracias por contactarme, ${cleanName}! (1)`,
+        html: buildConfirmationHtml(cleanName),
+      });
+      console.log(`(1) Confirmación enviada a ${cleanEmail}`);
+    } else {
+      console.warn('(!) No hay método de envío configurado para confirmación al cliente.');
+    }
   } catch (err) {
-    // Loggeamos el error pero respondemos éxito igualmente
     console.error(`(!)  No se pudo enviar confirmación a ${cleanEmail}:`, err.message);
     console.error('   → Posible causa: dominio corporativo/universitario bloquea emails externos.');
   }
@@ -327,6 +373,6 @@ app.use((err, req, res, next) => {
 // ─── Start ────────────────────────────────────────────────────────────────────
 app.listen(PORT, () => {
   console.log(`Servidor listo en puerto ${PORT}`);
-  console.log(`Usando cuenta: ${EMAIL_USER}`);
-  console.log(`CORS permitido para: ${ALLOWED_ORIGIN}`);
+  console.log(`Usando cuenta: ${EMAIL_USER || 'no-configurada'}`);
+  console.log(`CORS permitido para: ${allowedOrigins.join(', ')}`);
 });

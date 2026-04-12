@@ -5,7 +5,7 @@ import {
   CheckCircle2, Loader2, Terminal, Wifi
 } from 'lucide-react'
 
-const BACKEND_URL = 'https://mi-portafolio-1-0g4h.onrender.com'
+const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || 'https://produccion-abril.onrender.com'
 const MAX_MESSAGE_LENGTH = 2000
 
 const Contact = () => {

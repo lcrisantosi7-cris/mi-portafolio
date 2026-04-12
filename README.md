@@ -39,5 +39,47 @@ Si deseas ejecutar este proyecto localmente, sigue estos pasos:
 ### 1. Clonar el repositorio
 
 ```bash
-git clone [https://github.com/lcrisantosi7-cris/mi-portafolio.git](https://github.com/lcrisantosi7-cris/mi-portafolio.git)
+git clone https://github.com/lcrisantosi7-cris/mi-portafolio.git
+cd mi-portafolio
 ```
+
+### 2. Instalar dependencias
+
+```bash
+npm install --no-audit --no-fund
+```
+
+### 3. Variables de entorno (desarrollo)
+
+- Backend (crear `backend/.env`):
+
+```env
+ALLOWED_ORIGIN=http://localhost:5173
+EMAIL_USER=tu-email@gmail.com
+EMAIL_PASS=tu-app-password-o-app-password-de-gmail
+PORT=3000
+# Opcional: usar Resend para mejor entregabilidad
+# RESEND_API_KEY=tu_resend_api_key
+# RESEND_FROM=tu@dominio.com
+# RESEND_TO=tu@dominio.com
+```
+
+- Frontend (crear `.env.local` o `.env` en la raíz del proyecto):
+
+```env
+VITE_BACKEND_URL=http://localhost:3000
+```
+
+### 4. Ejecutar backend
+
+```bash
+node backend/server.js
+```
+
+### 5. Ejecutar frontend
+
+```bash
+npm run dev
+```
+
+Esto permite desarrollar localmente con el frontend apuntando a `http://localhost:3000` y mantener la URL de producción configurada en Vite para despliegue.
