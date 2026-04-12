@@ -293,14 +293,36 @@ app.post('/api/contact', contactLimiter, async (req, res) => {
   //1. Email de notificación (para ti) 
   try {
     if (resendClient) {
-      // Usar Resend para notificación interna
-      await resendClient.emails.send({
-        from: process.env.RESEND_FROM || process.env.EMAIL_USER,
-        to: [process.env.RESEND_TO || process.env.EMAIL_USER],
-        subject: `<!> Nuevo mensaje de ${cleanName}`,
-        html: buildNotificationHtml(cleanName, cleanEmail, cleanMessage),
-      });
-      console.log(`(1) Notificación enviada vía Resend a ${process.env.RESEND_TO || process.env.EMAIL_USER}`);
+      // Usar Resend para notificación interna (loguear respuesta para diagnóstico)
+      try {
+        const result = await resendClient.emails.send({
+          from: process.env.RESEND_FROM || process.env.EMAIL_USER,
+          to: [process.env.RESEND_TO || process.env.EMAIL_USER],
+          subject: `<!> Nuevo mensaje de ${cleanName}`,
+          html: buildNotificationHtml(cleanName, cleanEmail, cleanMessage),
+        });
+        console.log(`(1) Notificación enviada vía Resend a ${process.env.RESEND_TO || process.env.EMAIL_USER}`, result);
+      } catch (sendErr) {
+        console.error('(X) Error Resend - notificación:', sendErr);
+        // Reintentar con Nodemailer si está disponible
+        if (transporter) {
+          try {
+            const info = await transporter.sendMail({
+              from: `"Portfolio Contact" <${process.env.EMAIL_USER}>`,
+              to: process.env.EMAIL_USER,
+              replyTo: cleanEmail,
+              subject: `<!> Nuevo mensaje de ${cleanName}`,
+              html: buildNotificationHtml(cleanName, cleanEmail, cleanMessage),
+            });
+            console.log('(1) Notificación enviada vía Nodemailer como fallback:', info);
+          } catch (fallbackErr) {
+            console.error('(X) Fallback Nodemailer falló:', fallbackErr);
+            throw fallbackErr;
+          }
+        } else {
+          throw sendErr;
+        }
+      }
     } else if (transporter) {
       await transporter.sendMail({
         from: `"Portfolio Contact" <${process.env.EMAIL_USER}>`,
@@ -324,21 +346,42 @@ app.post('/api/contact', contactLimiter, async (req, res) => {
   // 2. Email de confirmación (para el cliente) — no bloqueante
   try {
     if (resendClient) {
-      await resendClient.emails.send({
-        from: process.env.RESEND_FROM || process.env.EMAIL_USER,
-        to: [cleanEmail],
-        subject: `¡Gracias por contactarme, ${cleanName}! (1)`,
-        html: buildConfirmationHtml(cleanName),
-      });
-      console.log(`(1) Confirmación enviada vía Resend a ${cleanEmail}`);
+      try {
+        const result = await resendClient.emails.send({
+          from: process.env.RESEND_FROM || process.env.EMAIL_USER,
+          to: [cleanEmail],
+          subject: `¡Gracias por contactarme, ${cleanName}! (1)`,
+          html: buildConfirmationHtml(cleanName),
+        });
+        console.log(`(1) Confirmación enviada vía Resend a ${cleanEmail}`, result);
+      } catch (sendErr) {
+        console.error('(!) Error Resend - confirmación al cliente:', sendErr);
+        if (transporter) {
+          try {
+            const info = await transporter.sendMail({
+              from: `"Luis Crisanto" <${process.env.EMAIL_USER}>`,
+              to: cleanEmail,
+              subject: `¡Gracias por contactarme, ${cleanName}! (1)`,
+              html: buildConfirmationHtml(cleanName),
+            });
+            console.log('(1) Confirmación enviada vía Nodemailer como fallback:', info);
+          } catch (fallbackErr) {
+            console.error('(!) Fallback Nodemailer confirmación falló:', fallbackErr);
+          }
+        }
+      }
     } else if (transporter) {
-      await transporter.sendMail({
-        from: `"Luis Crisanto" <${process.env.EMAIL_USER}>`,
-        to: cleanEmail,
-        subject: `¡Gracias por contactarme, ${cleanName}! (1)`,
-        html: buildConfirmationHtml(cleanName),
-      });
-      console.log(`(1) Confirmación enviada a ${cleanEmail}`);
+      try {
+        const info = await transporter.sendMail({
+          from: `"Luis Crisanto" <${process.env.EMAIL_USER}>`,
+          to: cleanEmail,
+          subject: `¡Gracias por contactarme, ${cleanName}! (1)`,
+          html: buildConfirmationHtml(cleanName),
+        });
+        console.log(`(1) Confirmación enviada a ${cleanEmail}`, info);
+      } catch (err) {
+        console.error('(!) Error enviando confirmación vía Nodemailer:', err);
+      }
     } else {
       console.warn('(!) No hay método de envío configurado para confirmación al cliente.');
     }
