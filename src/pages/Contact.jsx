@@ -2,32 +2,57 @@ import React, { useState, useEffect, useRef } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import {
   Mail, MapPin, Send, Linkedin, Github,
-  CheckCircle2, Loader2, Terminal, Wifi
+  CheckCircle2, Loader2, Terminal, Wifi,
 } from 'lucide-react'
 
-const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || 'https://produccion-abril.onrender.com'
-const MAX_MESSAGE_LENGTH = 2000
+// ─── Config ───────────────────────────────────────────────────────────────────
+const BACKEND_URL       = import.meta.env.VITE_BACKEND_URL || 'https://produccion-abril.onrender.com'
+const MAX_MESSAGE_LENGTH = 2000   // must match server-side sanitize limit
+const WAKE_INTERVAL_MS  = 10_000
+const MAX_WAKE_ATTEMPTS = 12      // ~2 min
 
+// ─── Static data ─────────────────────────────────────────────────────────────
+const CONTACT_INFO = [
+  {
+    id: 'response',
+    icon: Mail,
+    label: 'Canal de Comunicación',
+    value: 'Respuesta en menos de 24h',
+    subValue: 'Usa el formulario para prioridad',
+  },
+  {
+    id: 'location',
+    icon: MapPin,
+    label: 'Base de Operaciones',
+    value: 'Perú (Remote Available)',
+  },
+]
+
+const SOCIAL_LINKS = [
+  { name: 'LinkedIn', icon: Linkedin, url: 'https://www.linkedin.com/in/luis-crisanto-silupú' },
+  { name: 'GitHub',   icon: Github,   url: 'https://github.com/lcrisantosi7-cris/' },
+]
+
+// ─── Component ────────────────────────────────────────────────────────────────
 const Contact = () => {
-  const [formState, setFormState]     = useState({ name: '', email: '', message: '' })
-  const [status, setStatus]           = useState('idle')
+  const [formState,    setFormState]    = useState({ name: '', email: '', message: '' })
+  const [status,       setStatus]       = useState('idle')   // idle | loading | success | error
   const [errorMessage, setErrorMessage] = useState('')
   const [focusedField, setFocusedField] = useState(null)
-  const [serverReady, setServerReady] = useState(false)
-  const [wakingUp, setWakingUp]       = useState(false)
+  const [serverReady,  setServerReady]  = useState(false)
+  const [wakingUp,     setWakingUp]     = useState(false)
 
   const wakeAttempts = useRef(0)
   const intervalRef  = useRef(null)
 
-  // ── Wake-up del servidor ────────────────────────────────────────────────────
+  // ── Server wake-up polling ─────────────────────────────────────────────────
   useEffect(() => {
-    const wakeServer = async () => {
+    const ping = async () => {
       try {
         const res = await fetch(`${BACKEND_URL}/health`)
         if (res.ok) {
           setServerReady(true)
           setWakingUp(false)
-          // Una vez listo, detenemos el intervalo
           clearInterval(intervalRef.current)
         } else {
           setWakingUp(true)
@@ -35,21 +60,23 @@ const Contact = () => {
       } catch {
         setWakingUp(true)
         wakeAttempts.current += 1
-        // Tras 12 intentos (~2 min) dejamos de intentar para no saturar
-        if (wakeAttempts.current >= 12) {
+        if (wakeAttempts.current >= MAX_WAKE_ATTEMPTS) {
           clearInterval(intervalRef.current)
           setWakingUp(false)
         }
       }
     }
 
-    wakeServer() // Llamada inmediata al montar
-    intervalRef.current = setInterval(wakeServer, 10000)
-
+    ping()
+    intervalRef.current = setInterval(ping, WAKE_INTERVAL_MS)
     return () => clearInterval(intervalRef.current)
   }, [])
 
-  // ── Submit ──────────────────────────────────────────────────────────────────
+  // ── Form field helper ──────────────────────────────────────────────────────
+  const updateField = (field) => (e) =>
+    setFormState((prev) => ({ ...prev, [field]: e.target.value }))
+
+  // ── Submit ─────────────────────────────────────────────────────────────────
   const handleSubmit = async (e) => {
     e.preventDefault()
     if (status === 'loading' || status === 'success') return
@@ -58,61 +85,59 @@ const Contact = () => {
     setErrorMessage('')
 
     try {
-      const response = await fetch(`${BACKEND_URL}/api/contact`, {
-        method: 'POST',
+      const res  = await fetch(`${BACKEND_URL}/api/contact`, {
+        method:  'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(formState),
+        body:    JSON.stringify(formState),
       })
 
-      const data = await response.json()
-      if (!response.ok) throw new Error(data.error || 'Error al enviar')
+      // Safely parse JSON — server may return empty body on crash/502
+      let data = {}
+      try { data = await res.json() } catch { /* empty body, keep default */ }
+
+      if (!res.ok) throw new Error(data.error || `Error del servidor (${res.status})`)
 
       setStatus('success')
       setFormState({ name: '', email: '', message: '' })
       setTimeout(() => setStatus('idle'), 4000)
-
-    } catch (error) {
+    } catch (err) {
       const msg =
-        error.message === 'Failed to fetch'
+        err.message === 'Failed to fetch'
           ? 'No se pudo conectar al servidor. Espera unos segundos e intenta de nuevo.'
-          : error.message
-
+          : err.message
       setErrorMessage(msg)
       setStatus('error')
       setTimeout(() => setStatus('idle'), 6000)
     }
   }
 
-  // ── Data ────────────────────────────────────────────────────────────────────
-  const contactInfo = [
-    {
-      id: 'email',
-      icon: Mail,
-      label: 'Canal de Comunicación',
-      value: 'Respuesta en menos de 24h',
-      subValue: 'Usa el formulario para prioridad',
-    },
-    {
-      id: 'location',
-      icon: MapPin,
-      label: 'Base de Operaciones',
-      value: 'Perú (Remote Available)',
-    },
-  ]
+  // ── Derived ────────────────────────────────────────────────────────────────
+  const charsLeft       = MAX_MESSAGE_LENGTH - formState.message.length
+  const isDisabled      = status === 'loading' || status === 'success'
+  const serverStatus    = serverReady ? 'ready' : wakingUp ? 'waking' : 'offline'
 
-  const socialLinks = [
-    { name: 'LinkedIn', icon: Linkedin, url: 'https://www.linkedin.com/in/luis-crisanto-silupú' },
-    { name: 'GitHub',   icon: Github,   url: 'https://github.com/lcrisantosi7-cris/' },
-  ]
+  const SERVER_LABEL = {
+    ready:   'servidor listo',
+    waking:  'despertando...',
+    offline: 'sin conexión',
+  }
+  const SERVER_COLOR = {
+    ready:   'text-emerald-500',
+    waking:  'text-amber-400',
+    offline: 'text-zinc-500',
+  }
 
-  const charsLeft = MAX_MESSAGE_LENGTH - formState.message.length
-  const isSubmitDisabled = status === 'loading' || status === 'success'
+  // ── Field label (floating) helper ──────────────────────────────────────────
+  const floatLabel = (field) =>
+    focusedField === field || formState[field]
+      ? '-top-2.5 bg-zinc-900 px-2 text-xs text-emerald-500 font-bold'
+      : 'top-3.5 text-zinc-500'
 
-  // ── Render ──────────────────────────────────────────────────────────────────
+  // ── Render ─────────────────────────────────────────────────────────────────
   return (
     <div className="min-h-screen bg-zinc-950 py-24 px-6 relative overflow-hidden flex items-center justify-center">
 
-      {/* Background Ambience */}
+      {/* Background ambience */}
       <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden">
         <div className="absolute top-[20%] right-[10%] w-96 h-96 bg-emerald-500/10 rounded-full blur-[100px]" />
         <div className="absolute bottom-[20%] left-[10%] w-96 h-96 bg-blue-600/10 rounded-full blur-[100px]" />
@@ -120,7 +145,7 @@ const Contact = () => {
           className="absolute inset-0 opacity-[0.05]"
           style={{
             backgroundImage:
-              'linear-gradient(#fff 1px, transparent 1px), linear-gradient(90deg, #fff 1px, transparent 1px)',
+              'linear-gradient(#fff 1px,transparent 1px),linear-gradient(90deg,#fff 1px,transparent 1px)',
             backgroundSize: '50px 50px',
           }}
         />
@@ -129,7 +154,7 @@ const Contact = () => {
       <div className="max-w-6xl w-full mx-auto relative z-10">
         <div className="grid lg:grid-cols-2 gap-12 lg:gap-24 items-start">
 
-          {/* ── LEFT COLUMN ──────────────────────────────────────────────── */}
+          {/* ── Left column ──────────────────────────────────────────────── */}
           <motion.div
             initial={{ opacity: 0, x: -50 }}
             whileInView={{ opacity: 1, x: 0 }}
@@ -160,14 +185,14 @@ const Contact = () => {
               </p>
             </div>
 
-            {/* Contact Cards */}
+            {/* Contact cards */}
             <div className="space-y-4 mb-12">
-              {contactInfo.map((info) => (
+              {CONTACT_INFO.map((info) => (
                 <div
                   key={info.id}
                   className="group bg-zinc-900/50 border border-zinc-800 p-5 rounded-2xl flex items-center gap-5 transition-all hover:border-emerald-500/30 hover:bg-zinc-900/80"
                 >
-                  <div className="w-12 h-12 bg-zinc-950 border border-zinc-800 rounded-xl flex items-center justify-center group-hover:scale-110 group-hover:border-emerald-500/50 transition-all shrink-0">
+                  <div className="w-12 h-12 bg-zinc-950 border border-zinc-800 rounded-xl flex items-center justify-center shrink-0 group-hover:scale-110 group-hover:border-emerald-500/50 transition-all">
                     <info.icon className="text-zinc-400 group-hover:text-emerald-500 transition-colors" size={20} />
                   </div>
                   <div>
@@ -181,9 +206,9 @@ const Contact = () => {
               ))}
             </div>
 
-            {/* Socials */}
+            {/* Social links */}
             <div className="flex gap-4">
-              {socialLinks.map((social) => (
+              {SOCIAL_LINKS.map((social) => (
                 <a
                   key={social.name}
                   href={social.url}
@@ -198,7 +223,7 @@ const Contact = () => {
             </div>
           </motion.div>
 
-          {/* ── RIGHT COLUMN: Form ────────────────────────────────────────── */}
+          {/* ── Right column: Form ────────────────────────────────────────── */}
           <motion.div
             initial={{ opacity: 0, x: 50 }}
             whileInView={{ opacity: 1, x: 0 }}
@@ -209,23 +234,24 @@ const Contact = () => {
 
             <div className="bg-zinc-900/80 backdrop-blur-xl border border-zinc-800 p-8 md:p-10 rounded-3xl shadow-2xl relative overflow-hidden">
 
-              {/* Form Header */}
+              {/* Form header */}
               <div className="flex items-center justify-between mb-8 pb-8 border-b border-zinc-800">
                 <div className="flex items-center gap-3">
                   <Terminal className="text-emerald-500 shrink-0" size={24} />
                   <h3 className="text-xl font-bold text-white">Enviar Mensaje</h3>
                 </div>
 
-                {/* Server status indicator */}
-                <div className="flex items-center gap-1.5" title={serverReady ? 'Servidor listo' : wakingUp ? 'Despertando servidor...' : 'Sin conexión'}>
-                  {wakingUp && !serverReady
+                {/* Server status */}
+                <div
+                  className="flex items-center gap-1.5"
+                  title={SERVER_LABEL[serverStatus]}
+                >
+                  {serverStatus === 'waking'
                     ? <Loader2 size={14} className="text-amber-400 animate-spin" />
-                    : <Wifi size={14} className={serverReady ? 'text-emerald-500' : 'text-zinc-600'} />
+                    : <Wifi size={14} className={serverStatus === 'ready' ? 'text-emerald-500' : 'text-zinc-600'} />
                   }
-                  <span className={`text-xs font-mono ${
-                    serverReady ? 'text-emerald-500' : wakingUp ? 'text-amber-400' : 'text-zinc-500'
-                  }`}>
-                    {serverReady ? 'servidor listo' : wakingUp ? 'despertando...' : 'sin conexión'}
+                  <span className={`text-xs font-mono ${SERVER_COLOR[serverStatus]}`}>
+                    {SERVER_LABEL[serverStatus]}
                   </span>
                 </div>
               </div>
@@ -237,11 +263,7 @@ const Contact = () => {
                 <div className="relative">
                   <label
                     htmlFor="contact-name"
-                    className={`absolute left-4 transition-all duration-300 pointer-events-none z-10 ${
-                      focusedField === 'name' || formState.name
-                        ? '-top-2.5 bg-zinc-900 px-2 text-xs text-emerald-500 font-bold'
-                        : 'top-3.5 text-zinc-500'
-                    }`}
+                    className={`absolute left-4 transition-all duration-300 pointer-events-none z-10 ${floatLabel('name')}`}
                   >
                     Tu Nombre
                   </label>
@@ -252,7 +274,7 @@ const Contact = () => {
                     maxLength={100}
                     autoComplete="name"
                     value={formState.name}
-                    onChange={(e) => setFormState({ ...formState, name: e.target.value })}
+                    onChange={updateField('name')}
                     onFocus={() => setFocusedField('name')}
                     onBlur={() => setFocusedField(null)}
                     className="w-full bg-zinc-950/50 border border-zinc-800 rounded-xl px-4 py-3.5 text-white outline-none focus:border-emerald-500/50 focus:ring-1 focus:ring-emerald-500/20 transition-all"
@@ -263,11 +285,7 @@ const Contact = () => {
                 <div className="relative">
                   <label
                     htmlFor="contact-email"
-                    className={`absolute left-4 transition-all duration-300 pointer-events-none z-10 ${
-                      focusedField === 'email' || formState.email
-                        ? '-top-2.5 bg-zinc-900 px-2 text-xs text-emerald-500 font-bold'
-                        : 'top-3.5 text-zinc-500'
-                    }`}
+                    className={`absolute left-4 transition-all duration-300 pointer-events-none z-10 ${floatLabel('email')}`}
                   >
                     Correo Electrónico
                   </label>
@@ -278,7 +296,7 @@ const Contact = () => {
                     maxLength={200}
                     autoComplete="email"
                     value={formState.email}
-                    onChange={(e) => setFormState({ ...formState, email: e.target.value })}
+                    onChange={updateField('email')}
                     onFocus={() => setFocusedField('email')}
                     onBlur={() => setFocusedField(null)}
                     className="w-full bg-zinc-950/50 border border-zinc-800 rounded-xl px-4 py-3.5 text-white outline-none focus:border-emerald-500/50 focus:ring-1 focus:ring-emerald-500/20 transition-all"
@@ -289,11 +307,7 @@ const Contact = () => {
                 <div className="relative">
                   <label
                     htmlFor="contact-message"
-                    className={`absolute left-4 transition-all duration-300 pointer-events-none z-10 ${
-                      focusedField === 'message' || formState.message
-                        ? '-top-2.5 bg-zinc-900 px-2 text-xs text-emerald-500 font-bold'
-                        : 'top-3.5 text-zinc-500'
-                    }`}
+                    className={`absolute left-4 transition-all duration-300 pointer-events-none z-10 ${floatLabel('message')}`}
                   >
                     Detalles del Proyecto
                   </label>
@@ -303,33 +317,27 @@ const Contact = () => {
                     required
                     maxLength={MAX_MESSAGE_LENGTH}
                     value={formState.message}
-                    onChange={(e) => setFormState({ ...formState, message: e.target.value })}
+                    onChange={updateField('message')}
                     onFocus={() => setFocusedField('message')}
                     onBlur={() => setFocusedField(null)}
                     className="w-full bg-zinc-950/50 border border-zinc-800 rounded-xl px-4 py-3.5 text-white outline-none focus:border-emerald-500/50 focus:ring-1 focus:ring-emerald-500/20 transition-all resize-none"
                   />
-                  {/* Character counter — only visible when typing */}
                   {(focusedField === 'message' || formState.message.length > 0) && (
-                    <p className={`text-right text-xs font-mono mt-1 transition-colors ${
-                      charsLeft < 100 ? 'text-amber-400' : 'text-zinc-600'
-                    }`}>
+                    <p className={`text-right text-xs font-mono mt-1 transition-colors ${charsLeft < 100 ? 'text-amber-400' : 'text-zinc-600'}`}>
                       {charsLeft} caracteres restantes
                     </p>
                   )}
                 </div>
 
-                {/* Submit Button */}
+                {/* Submit */}
                 <button
                   type="submit"
-                  disabled={isSubmitDisabled}
+                  disabled={isDisabled}
                   className={`w-full py-4 rounded-xl font-bold text-lg flex items-center justify-center gap-2 transition-all duration-300 disabled:cursor-not-allowed ${
-                    status === 'success'
-                      ? 'bg-emerald-500 text-zinc-950'
-                      : status === 'error'
-                      ? 'bg-red-500/20 border border-red-500/40 text-red-400'
-                      : status === 'loading'
-                      ? 'bg-zinc-800 text-zinc-400'
-                      : 'bg-white text-zinc-950 hover:bg-zinc-100 active:scale-[0.98]'
+                    status === 'success' ? 'bg-emerald-500 text-zinc-950'
+                    : status === 'error'   ? 'bg-red-500/20 border border-red-500/40 text-red-400'
+                    : status === 'loading' ? 'bg-zinc-800 text-zinc-400'
+                    : 'bg-white text-zinc-950 hover:bg-zinc-100 active:scale-[0.98]'
                   }`}
                 >
                   {status === 'loading' && <><Loader2 size={20} className="animate-spin shrink-0" /> Enviando...</>}
@@ -353,7 +361,7 @@ const Contact = () => {
                 </AnimatePresence>
               </form>
 
-              {/* Success Overlay */}
+              {/* Success overlay */}
               <AnimatePresence>
                 {status === 'success' && (
                   <motion.div
@@ -377,6 +385,7 @@ const Contact = () => {
                   </motion.div>
                 )}
               </AnimatePresence>
+
             </div>
           </motion.div>
 
