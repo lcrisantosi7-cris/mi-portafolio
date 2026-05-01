@@ -6,6 +6,7 @@ import {
 } from 'lucide-react'
 import { motion } from 'framer-motion'
 import { Link } from 'react-router-dom'
+import SEO from '../components/SEO'
 
 const Experience = () => {
   // Datos estructurados con iconos profesionales
@@ -72,7 +73,14 @@ const Experience = () => {
   }
 
   return (
-    <div className="min-h-screen bg-zinc-950 py-28 px-6 relative overflow-hidden">
+    <>
+      <SEO 
+        title="Experiencia y Formación | Luis Crisanto - Ingeniero de Sistemas"
+        description="Mi trayectoria académica en Ingeniería de Sistemas: 6 ciclos completados, 116+ créditos, 8+ proyectos. Roadmap de formación profesional."
+        canonical="https://mi-portafolio-khaki-two.vercel.app/experience"
+        keywords="Experiencia, Formación, Ingeniería de Sistemas, Educación, Universidad César Vallejo, Trayectoria académica"
+      />
+      <div className="min-h-screen bg-zinc-950 py-28 px-6 relative overflow-hidden">
       {/* Background sutil tipo 'Grid' */}
       <div className="absolute inset-0 z-0 opacity-[0.03]" 
            style={{ backgroundImage: `linear-gradient(#fff 1px, transparent 1px), linear-gradient(90deg, #fff 1px, transparent 1px)`, backgroundSize: '50px 50px' }}>
@@ -207,7 +215,7 @@ const Experience = () => {
         </motion.div>
 
       </motion.div>
-    </div>
+    </>
   )
 }
 

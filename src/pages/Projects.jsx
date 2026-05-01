@@ -6,6 +6,7 @@ import {
   Box, CreditCard, BarChart3, Calendar, Map, MessageSquare 
 } from 'lucide-react'
 import { Link } from 'react-router-dom'
+import SEO from '../components/SEO'
 
 const Projects = () => {
   const [activeFilter, setActiveFilter] = useState('all')
@@ -110,7 +111,14 @@ const Projects = () => {
     : projects.filter(p => p.category === activeFilter || p.type === activeFilter)
 
   return (
-    <div className="min-h-screen bg-zinc-950 py-28 px-6 relative">
+    <>
+      <SEO 
+        title="Proyectos | Luis Crisanto - Portfolio de Desarrollo"
+        description="Explora mis proyectos de ingeniería de software: APIs REST, sistemas de gestión escolar, microservicios, dashboards y arquitecturas backend escalables."
+        canonical="https://mi-portafolio-khaki-two.vercel.app/projects"
+        keywords="Proyectos, Portfolio, APIs REST, Microservicios, Full Stack, Backend, Node.js, PHP, React, Sistemas de Gestión"
+      />
+      <div className="min-h-screen bg-zinc-950 py-28 px-6 relative">
       {/* Background Dots */}
       <div className="absolute inset-0 z-0 opacity-10" style={{ backgroundImage: 'radial-gradient(#3f3f46 1px, transparent 1px)', backgroundSize: '30px 30px' }}></div>
 
@@ -134,7 +142,7 @@ const Projects = () => {
             transition={{ delay: 0.1 }}
             className="text-4xl md:text-6xl font-black text-white mb-6"
           >
-            Ingeniería & <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-emerald-600">Desarrollo</span>
+            Mis Proyectos: Ingeniería & <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-emerald-600">Desarrollo</span>
           </motion.h1>
           <motion.p className="text-zinc-400 max-w-2xl mx-auto text-lg">
             Una colección de soluciones técnicas, desde arquitecturas backend robustas hasta interfaces modernas.
@@ -282,7 +290,7 @@ const Projects = () => {
         </div>
 
       </div>
-    </div>
+    </>
   )
 }
 

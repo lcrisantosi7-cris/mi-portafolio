@@ -2,6 +2,7 @@ import React from 'react'
 import { ArrowRight, Code, Terminal, Cpu, Database, Cloud } from 'lucide-react'
 import { Link } from 'react-router-dom'
 import { motion } from 'framer-motion'
+import SEO from '../components/SEO'
 
 const Home = () => {
   const containerVariants = {
@@ -18,7 +19,14 @@ const Home = () => {
   }
 
   return (
-    <div className="min-h-screen bg-zinc-950 relative overflow-hidden flex items-center justify-center px-6 pt-20">
+    <>
+      <SEO 
+        title="Luis Crisanto | Ingeniero de Sistemas & Desarrollador Full Stack"
+        description="Especialista en arquitectura backend, Node.js, Spring Boot y AWS. Diseño de sistemas escalables y soluciones tecnológicas de alto impacto."
+        canonical="https://mi-portafolio-khaki-two.vercel.app/"
+        keywords="Luis Crisanto, Ingeniero de Sistemas, Full Stack Developer, Node.js, Spring Boot, React, AWS, Backend, Arquitectura de Sistemas"
+      />
+      <div className="min-h-screen bg-zinc-950 relative overflow-hidden flex items-center justify-center px-6 pt-20">
       
       {/* BACKGROUND DE INGENIERÍA */}
       {/* Grid Pattern */}
@@ -50,6 +58,7 @@ const Home = () => {
 
         {/* Hero Title */}
         <motion.h1 variants={itemVariants} className="text-6xl md:text-8xl lg:text-9xl font-black text-white mb-6 leading-[0.85] tracking-tighter">
+          <span className="sr-only">Luis Crisanto - Ingeniero de Sistemas y Desarrollador Full Stack</span>
           LUIS<br />
           <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 via-emerald-200 to-emerald-500">
             CRISANTO
@@ -114,7 +123,8 @@ const Home = () => {
         </motion.div>
 
       </motion.div>
-    </div>
+      </div>
+    </>
   )
 }
 
