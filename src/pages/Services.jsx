@@ -6,6 +6,7 @@ import {
   Terminal, Rocket, ShieldCheck, Clock, Users 
 } from 'lucide-react'
 import { Link } from 'react-router-dom'
+import SEO from '../components/SEO'
 
 const Services = () => {
   const services = [
@@ -124,7 +125,14 @@ const Services = () => {
   ]
 
   return (
-    <div className="min-h-screen bg-zinc-950 py-24 px-6 relative overflow-hidden">
+    <>
+      <SEO 
+        title="Servicios | Luis Crisanto - Soluciones de Software"
+        description="Servicios de desarrollo: Arquitectura Backend, Ingeniería de Datos, Full Stack, Cloud & DevOps, Consultoría de Software y Optimización."
+        canonical="https://mi-portafolio-khaki-two.vercel.app/services"
+        keywords="Servicios, Desarrollo Backend, Full Stack, Cloud, DevOps, Consultoría, Arquitectura de Software, APIs REST"
+      />
+      <div className="min-h-screen bg-zinc-950 py-24 px-6 relative overflow-hidden">
       {/* Background Pattern */}
       <div className="absolute inset-0 z-0 opacity-[0.03]" style={{ backgroundImage: 'linear-gradient(#fff 1px, transparent 1px), linear-gradient(90deg, #fff 1px, transparent 1px)', backgroundSize: '40px 40px' }}></div>
 
@@ -148,7 +156,7 @@ const Services = () => {
             transition={{ delay: 0.1 }}
             className="text-4xl md:text-6xl font-black text-white mb-6"
           >
-            Soluciones de <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-emerald-600">Alto Nivel</span>
+            Mis Servicios: Soluciones de <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-emerald-600">Alto Nivel</span>
           </motion.h1>
           <motion.p className="text-zinc-400 max-w-2xl mx-auto text-lg">
             Transformo requerimientos complejos en software funcional, seguro y escalable.
@@ -280,7 +288,7 @@ const Services = () => {
         </div>
 
       </div>
-    </div>
+    </>
   )
 }
 

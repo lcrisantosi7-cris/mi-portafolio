@@ -1,9 +1,10 @@
-import React, { useState, useEffect, useRef } from 'react'
+import React, { useState, useRef, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import {
   Mail, MapPin, Send, Linkedin, Github,
   CheckCircle2, Loader2, Terminal, Wifi,
 } from 'lucide-react'
+import SEO from '../components/SEO'
 
 // ─── Config ───────────────────────────────────────────────────────────────────
 const BACKEND_URL       = import.meta.env.VITE_BACKEND_URL || 'https://produccion-abril.onrender.com'
@@ -135,7 +136,14 @@ const Contact = () => {
 
   // ── Render ─────────────────────────────────────────────────────────────────
   return (
-    <div className="min-h-screen bg-zinc-950 py-24 px-6 relative overflow-hidden flex items-center justify-center">
+    <>
+      <SEO 
+        title="Contacto | Luis Crisanto - Colaboración y Proyectos"
+        description="Ponte en contacto conmigo para proyectos de desarrollo backend, arquitectura de software y soluciones Full Stack. Respuesta en menos de 24h."
+        canonical="https://mi-portafolio-khaki-two.vercel.app/contact"
+        keywords="Contacto, Colaboración, Desarrollo, Backend, Full Stack, Proyectos, Email, LinkedIn"
+      />
+      <div className="min-h-screen bg-zinc-950 py-24 px-6 relative overflow-hidden flex items-center justify-center">
 
       {/* Background ambience */}
       <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden">
@@ -391,7 +399,7 @@ const Contact = () => {
 
         </div>
       </div>
-    </div>
+    </>
   )
 }
 

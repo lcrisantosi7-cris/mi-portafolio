@@ -2,6 +2,7 @@ import React from 'react'
 import { Link } from 'react-router-dom'
 import { GraduationCap, Code, Server, Terminal, Cpu, Award, ChevronRight, Download } from 'lucide-react'
 import { motion } from 'framer-motion'
+import SEO from '../components/SEO'
 
 const About = () => {
   const skills = [
@@ -31,7 +32,14 @@ const About = () => {
   }
 
   return (
-    <div className="min-h-screen bg-zinc-950 relative overflow-hidden pt-28 pb-20">
+    <>
+      <SEO 
+        title="Sobre Luis Crisanto | Ingeniero de Sistemas en Formación"
+        description="Conoce mi trayectoria académica, habilidades técnicas en Node.js, MySQL, React y AWS. Especialista en arquitectura backend y desarrollo Full Stack."
+        canonical="https://mi-portafolio-khaki-two.vercel.app/about"
+        keywords="Luis Crisanto, Sobre mí, Ingeniero de Sistemas, Trayectoria académica, Skills técnicos, Node.js, MySQL, React, AWS"
+      />
+      <div className="min-h-screen bg-zinc-950 relative overflow-hidden pt-28 pb-20">
       {/* Background Decor */}
       <div className="absolute top-0 left-1/4 w-[500px] h-[500px] bg-emerald-500/5 rounded-full blur-[120px]" />
 
@@ -50,6 +58,7 @@ const About = () => {
           </div>
           <h1 className="text-5xl md:text-7xl font-black text-emerald-400 tracking-tighter italic">
             SOBRE <span className="text-white outline-text">MÍ</span>
+            <span className="sr-only">Página sobre Luis Crisanto, Ingeniero de Sistemas</span>
           </h1>
         </motion.div>
 
@@ -74,7 +83,7 @@ const About = () => {
             <motion.div variants={fadeInUp} className="prose prose-invert max-w-none">
               <h2 className="text-3xl font-bold text-white mb-6 flex items-center gap-3">
                 <Terminal className="text-emerald-500" />
-                _ejecutar_perfil.sh
+                Perfil Profesional
               </h2>
               <p className="text-zinc-400 text-lg leading-relaxed">
                 Como futuro <span className="text-white font-medium italic">Ingeniero de Sistemas</span>, mi enfoque va más allá de escribir código; se trata de diseñar arquitecturas que resuelvan problemas reales.
@@ -187,8 +196,9 @@ const About = () => {
         .outline-text {
           -webkit-text-stroke: 1px rgba(255,255,255,0.1);
         }
-      `}} />
-    </div>
+       </motion.div>
+      </div>
+    </>
   )
 }
 

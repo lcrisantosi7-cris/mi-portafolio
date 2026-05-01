@@ -5,6 +5,7 @@ import {
   Terminal, Globe, Braces, Container, Cpu, GitBranch, 
   LayoutTemplate, Share2, ShieldCheck, Box
 } from 'lucide-react'
+import SEO from '../components/SEO'
 
 const Skills = () => {
   const [activeCategory, setActiveCategory] = useState('all')
@@ -50,7 +51,14 @@ const Skills = () => {
     : skills.filter(skill => skill.category === activeCategory || (activeCategory === 'cloud' && skill.category === 'tools'))
 
   return (
-    <div className="min-h-screen bg-zinc-950 py-28 px-6 relative overflow-hidden">
+    <>
+      <SEO 
+        title="Habilidades Técnicas | Luis Crisanto - Stack Tecnológico"
+        description="Mis habilidades: Node.js, PHP, React, MySQL, AWS, Docker, Git. Backend, Frontend, Bases de Datos y DevOps. Nivel de dominio por tecnología."
+        canonical="https://mi-portafolio-khaki-two.vercel.app/skills"
+        keywords="Habilidades, Skills, Node.js, PHP, React, MySQL, AWS, Docker, Frontend, Backend, DevOps, Programación"
+      />
+      <div className="min-h-screen bg-zinc-950 py-28 px-6 relative overflow-hidden">
       {/* Background Grid estético */}
       <div className="absolute inset-0 z-0 opacity-[0.05]" 
            style={{ backgroundImage: `linear-gradient(#fff 1px, transparent 1px), linear-gradient(90deg, #fff 1px, transparent 1px)`, backgroundSize: '30px 30px' }}>
@@ -203,7 +211,7 @@ const Skills = () => {
         </div>
 
       </div>
-    </div>
+    </>
   )
 }
 
